@@ -1,5 +1,6 @@
 const botconfig = require("./botconfig.json");
 const { Client, RichEmbed, Collection } = require("discord.js");
+const fs = require("fs");
 
 const client = new Client({
   disableEveryone: true
@@ -7,6 +8,9 @@ const client = new Client({
 
 client.commands = new Collection();
 client.aliases = new Collection();
+
+client.categories = fs.readdirSync("./commands/");
+
 
 ["command"].forEach(handler => {
   require(`./handler/${handler}`)(client);
@@ -18,17 +22,17 @@ client.on("ready", async () => {
 
 client.on("message", async message => {
   if (
-    message.author.client ||
+    message.author.bot ||
     !message.guild ||
-    !message.content.startsWith(prefix)
+    !message.content.startsWith(botconfig.prefix)
   )
     return;
 
   if (!message.member)
     message.member = await message.guild.fetchMember(message);
 
-  const args = messege.content
-    .slice(prefix.length)
+  const args = message.content
+    .slice(botconfig.prefix.length)
     .trim()
     .split(/ +/g);
   const cmd = args.shift().toLowerCase();
