@@ -13,9 +13,9 @@ module.exports = (client) => {
 
             if(pull.name){
                 client.commands.set(pull.name, pull);
-                table.addRow(file, "yes");
+                table.addRow(file, "good");
             }else{
-                table.addRow(file, "no");
+                table.addRow(file, "bad");
                 continue;
             }
 
