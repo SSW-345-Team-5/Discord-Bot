@@ -1,4 +1,4 @@
 # Discord Bot
-***Required Node Modules: discord.js, strip-indents, alphavantage***
+***Required Node Modules: discord.js, strip-indents, alphavantage, fs***
 
-Makes use of MERN boilerplate: https://github.com/keithweaver/MERN-boilerplate
+
