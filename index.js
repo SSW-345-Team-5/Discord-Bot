@@ -35,6 +35,7 @@ client.on("message", async message => {
     .slice(botconfig.prefix.length)
     .trim()
     .split(/ +/g);
+    
   const cmd = args.shift().toLowerCase();
 
   if (cmd.length === 0) return;
