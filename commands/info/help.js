@@ -26,11 +26,11 @@ function getAll(client, message) {
   const info = client.categories
     .map(
       cat =>
-        stripIndents`**${cat[0].toUpperCase() + cat.slice(1)}** \n${commands(
+        stripIndents`**${cat[0].toUpperCase() + cat.slice(1)}** \n${commands}(
           cat
         )}`
     )
-    .reduce((string, categort) => string + "\n" + categort);
+    .reduce((string, category) => string + "\n" + category);
 
   return message.channel.send(embed.setDescription(info));
 }
@@ -47,7 +47,7 @@ function getCMD(client, message, input) {
   if (!cmd)
     return message.channel.send(embed.setColor("ff0000").setDescription(info));
 
-  if (cmd.name) info = `**Command name** ${cmd.name}`;
+  if (cmd.name) info = `**Command Name:** ${cmd.name}`;
   if (cmd.aliases)
     info += `\n**Aliases**: ${cmd.aliases.map(a => `\`${a}\``).join(", ")}`;
   if (cmd.description) info += `\n**Description**: ${cmd.description}`;
@@ -55,6 +55,13 @@ function getCMD(client, message, input) {
     info += `\n**Usage**: ${cmd.usage}`;
     embed.setFooter(`Syntax: <> = required, [] - optional`);
   }
+  if (cmd.parameters) {
+    info += `\n**Parameters**:`;
+    for (var key of Object.keys(cmd.parameters)) {
+      info += `\n${key}: ${cmd.parameters[key]}`;
+    }
+  }
+
 
   return message.channel.send(embed.setColor("GREEN").setDescription(info));
 }
