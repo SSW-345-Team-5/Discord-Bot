@@ -63,10 +63,10 @@ function intradayData(client, message, input) {
         embed.setColor("BLUE");
 
         return message.channel
-          .send({ files: [attachment], embed: embed })
-          .then(() => {
-            cleanUp(ticker);
-          });
+          .send({ files: [attachment], embed: embed });
+          // .then(() => {
+          //   cleanUp(ticker);
+          // });
       });
     });
   });
