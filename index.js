@@ -1,5 +1,5 @@
 const botconfig = require("./botconfig.json");
-const { Client, RichEmbed, Collection } = require("discord.js");
+const { Client, Collection } = require("discord.js");
 const fs = require("fs");
 
 const client = new Client({
@@ -18,6 +18,7 @@ client.categories = fs.readdirSync("./commands/");
 
 client.on("ready", async () => {
   console.log(`${client.user.username} is online!`);
+  client.user.setActivity('!help', {type: 'STREAMING'});
 });
 
 client.on("message", async message => {
