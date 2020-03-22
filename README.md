@@ -1,5 +1,5 @@
 # Discord Bot
-***Required Node Modules: discord.js, strip-indents, alphavantage, fs, sync-exec***
+***Required Node Modules: discord.js, strip-indents, alphavantage, fs, path, pizzip, docxtemplater, docxtemplater-image-module***
 
-***Required Python Libraries: pandas, docx, docxtpl***
+***Required Python Libraries: pandas***
 
