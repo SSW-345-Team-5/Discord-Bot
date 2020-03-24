@@ -1,10 +1,8 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fs = require("fs");
-const python = require("python-shell");
-
+const python = require("../../pythonRun.js");
 const botconfig = require("./../../botconfig.json");
 const key = botconfig.alphavantage_key;
-
 const alpha = require("alphavantage")({ key: key });
 
 module.exports = {
@@ -31,9 +29,12 @@ module.exports = {
       });
     }
   },
-  intradayData: (ticker) => {
+  intradayData: ticker => {
     return intradayData(ticker);
-  } 
+  },
+  intradayCleanUp: ticker => {
+    return intradayCleanUp(ticker);
+  }
 };
 
 function intradayData(ticker) {
@@ -46,30 +47,30 @@ function intradayData(ticker) {
     });
   };
 
+  var options = {
+    pythonOptions: ["-u"], // get print results in real-time
+    scriptPath: "./commands/intraday/",
+    args: ticker
+  };
+
+  const path = "chart.py";
+
   return new Promise((resolve, reject) => {
     alpha.data.intraday(ticker).then(data => {
       writeFilePromise(
         `commands/intraday/${ticker}.json`,
         JSON.stringify(data)
       ).then(() => {
-        var options = {
-          pythonOptions: ["-u"], // get print results in real-time
-          scriptPath: "./commands/intraday/",
-          args: ticker
-        };
-        let py = new python.PythonShell("chart.py", options);
-
-        py.end(function(err) {
-          if (err) reject();
-          else resolve();
-        });
+        python
+          .pythonRun(path, options)
+          .then(() => resolve())
+          .catch(() => reject());
       });
     });
   });
 }
 
 function intradayDisplay(client, message, ticker) {
-  console.log("ok");
   const embed = new MessageEmbed();
 
   const attachment = new MessageAttachment(`commands/intraday/${ticker}.png`);
@@ -80,11 +81,11 @@ function intradayDisplay(client, message, ticker) {
   return message.channel
     .send({ files: [attachment], embed: embed })
     .then(() => {
-      cleanUp(ticker);
+      intradayCleanUp(ticker);
     });
 }
 
-function cleanUp(ticker) {
+function intradayCleanUp(ticker) {
   const cb = function(err) {
     if (err) console.log(err);
   };
