@@ -1,6 +1,7 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fs = require("fs");
 const python = require("../../pythonRun.js");
+const stockErr = require("../../stockNotFound.js")
 const botconfig = require("./../../botconfig.json");
 const key = botconfig.alphavantage_key;
 const alpha = require("alphavantage")({ key: key });
@@ -24,20 +25,20 @@ module.exports = {
     else {
       var ticker = args[0].toLowerCase();
 
-      intradayData(ticker).then(() => {
+      intradayData(message, ticker).then(() => {
         intradayDisplay(client, message, ticker);
       });
     }
   },
-  intradayData: ticker => {
-    return intradayData(ticker);
+  intradayData: (message, ticker) => {
+    return intradayData(message, ticker);
   },
   intradayCleanUp: ticker => {
     return intradayCleanUp(ticker);
   }
 };
 
-function intradayData(ticker) {
+function intradayData(message, ticker) {
   const writeFilePromise = (file, data) => {
     return new Promise((resolve, reject) => {
       fs.writeFile(file, data, error => {
@@ -56,17 +57,22 @@ function intradayData(ticker) {
   const path = "chart.py";
 
   return new Promise((resolve, reject) => {
-    alpha.data.intraday(ticker).then(data => {
-      writeFilePromise(
-        `commands/intraday/${ticker}.json`,
-        JSON.stringify(data)
-      ).then(() => {
-        python
-          .pythonRun(path, options)
-          .then(() => resolve())
-          .catch(() => reject());
+    alpha.data
+      .intraday(ticker)
+      .catch(() => {
+        stockErr.stockNotFound(message, ticker);
+      })
+      .then(data => {
+        writeFilePromise(
+          `commands/intraday/${ticker}.json`,
+          JSON.stringify(data)
+        ).then(() => {
+          python
+            .pythonRun(path, options)
+            .then(() => resolve())
+            .catch(() => reject());
+        });
       });
-    });
   });
 }
 
