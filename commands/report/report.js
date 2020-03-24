@@ -16,14 +16,14 @@ module.exports = {
     else {
       var ticker = args[0].toLowerCase();
 
-      reportData(ticker).then(() => {
+      reportData(message, ticker).then(() => {
         displayReport(client, message, ticker);
       });
     }
   }
 };
 
-function reportData(input) {
+function reportData(message, input) {
   const ticker = input.toLowerCase();
 
   var options = {
@@ -35,7 +35,7 @@ function reportData(input) {
   var path = "report.py";
 
   return new Promise((resolve, reject) => {
-    intraData.intradayData(ticker).then(() => {
+    intraData.intradayData(message, ticker).then(() => {
       python
         .pythonRun(path, options)
         .then(() => {
