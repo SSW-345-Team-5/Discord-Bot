@@ -5,10 +5,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-params = {"ytick.color": "w",
-          "xtick.color": "w",
-          "axes.labelcolor": "w",
-          "axes.edgecolor": "w"}
+params = {"ytick.color": "b",
+          "xtick.color": "b",
+          "axes.labelcolor": "b",
+          "axes.edgecolor": "b"}
 plt.rcParams.update(params)
 
 if __name__ == '__main__':
