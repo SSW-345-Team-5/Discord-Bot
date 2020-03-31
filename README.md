@@ -1,5 +1,1 @@
-# Discord Bot
-***Required Node Modules: discord.js, strip-indents, alphavantage, fs, path, pizzip, docxtemplater, docxtemplater-image-module***
-
-***Required Python Libraries: pandas***
-
+[DESIGN.md (.pdf for formatting)](https://github.com/SSW-345-Team-5/Discord-Bot/blob/master/Design%20Milestone.pdf)
