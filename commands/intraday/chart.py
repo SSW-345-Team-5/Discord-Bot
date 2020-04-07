@@ -38,8 +38,7 @@ if __name__ == '__main__':
         data = []
         for k, v in time_series.items():
             # determine what data we need to plot
-            datetime_object = datetime.strptime(
-                k, '%Y-%m-%d %H:%M:%S')
+            datetime_object = datetime.strptime(k, '%Y-%m-%d %H:%M:%S')
             # row = [datetime_object]
             # for p in plot_list:
             #     row.append(float(v[p]))
@@ -50,10 +49,10 @@ if __name__ == '__main__':
         df = pd.DataFrame(data, columns=['time', 'close'])
         df.set_index('time')
 
-        ax = df.plot(kind='line', x='time', y=['close'])
+        ax = df.plot(kind='line', x='time', y=['close'], title=f'{ticker.upper()} Intraday Data')
         ax.set_facecolor('#333333')
-        ax.set_xlabel("time")
-        ax.set_ylabel("close")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Close")
 
         plt.savefig(
             f'commands/intraday/{ticker}.png', transparent=True)
