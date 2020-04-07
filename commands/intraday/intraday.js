@@ -1,7 +1,7 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fs = require("fs");
 const python = require("../../pythonRun.js");
-const stockErr = require("../../stockNotFound.js")
+const stockErr = require("../../stockNotFound.js");
 const botconfig = require("./../../botconfig.json");
 const key = botconfig.alphavantage_key;
 const alpha = require("alphavantage")({ key: key });
@@ -11,17 +11,11 @@ module.exports = {
   aliases: ["in"],
   category: "intraday",
   description:
-    "Returns a graph for each of the input data fields over the selected intraday data",
-  usage: "[ticker] [time_interval] [data_1] <data_2>...",
-  parameters: {
-    time_interval: "1/5/15/30/60 (minutes between samples)",
-    data_fields: "open/high/low/close/volume"
-  },
+    "Returns graphs of the stock's intraday data over the previous hundered 15-minute intervals. Data includes high, low, opening and closing prices.",
+  usage: "<ticker>",
   run: async (client, message, args) => {
     if (args.length < 1)
-      return message.channel.send(
-        "Usage: [ticker] [time_interval] [data_1] <data_2>..."
-      );
+      return message.channel.send("Usage: <ticker> <time_interval>...");
     else {
       var ticker = args[0].toLowerCase();
 
@@ -58,7 +52,7 @@ function intradayData(message, ticker) {
 
   return new Promise((resolve, reject) => {
     alpha.data
-      .intraday(ticker)
+      .intraday(ticker, "15min")
       .catch(() => {
         stockErr.stockNotFound(message, ticker);
       })
