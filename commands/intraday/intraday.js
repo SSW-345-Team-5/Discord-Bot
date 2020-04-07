@@ -11,11 +11,11 @@ module.exports = {
   aliases: ["in"],
   category: "intraday",
   description:
-    "Returns graphs of the stock's intraday data over the previous hundered 15-minute intervals. Data includes high, low, opening and closing prices.",
+    "Rreturns intraday time series (timestamp, open, high, low, close, volume) of the equity specified.",
   usage: "<ticker>",
   run: async (client, message, args) => {
     if (args.length < 1)
-      return message.channel.send("Usage: <ticker> <time_interval>...");
+      return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 
