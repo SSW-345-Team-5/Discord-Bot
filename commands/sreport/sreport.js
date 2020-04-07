@@ -6,13 +6,13 @@ const intraData = require("../intraday/intraday.js");
 const python = require("../../pythonRun.js");
 
 module.exports = {
-  name: "report",
-  aliases: ["rpt"],
-  category: "report",
+  name: "sreport",
+  aliases: ["srpt"],
+  category: "sreport",
   description: "Returns the aggregate analysis data for a stock",
-  usage: "[ticker]",
+  usage: "<ticker>",
   run: async (client, message, args) => {
-    if (args.length < 1) return message.channel.send("Usage: [ticker]");
+    if (args.length < 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 
@@ -28,7 +28,7 @@ function reportData(message, input) {
 
   var options = {
     pythonOptions: ["-u"], // get print results in real-time
-    scriptPath: "./commands/report/",
+    scriptPath: "./commands/sreport/",
     args: ticker
   };
 
@@ -50,7 +50,7 @@ function reportData(message, input) {
 
 function displayReport(client, message, ticker) {
   const attachment = new MessageAttachment(
-    `./commands/report/${ticker}_report.docx`
+    `./commands/sreport/${ticker}_report.docx`
   );
 
   return message.channel.send({ files: [attachment] }).then(() => {
@@ -62,7 +62,7 @@ function cleanUp(ticker) {
   const cb = function(err) {
     if (err) console.log(err);
   };
-  fs.unlink(`commands/report/${ticker}_report.docx`, cb);
+  fs.unlink(`commands/sreport/${ticker}_report.docx`, cb);
   intraData.intradayCleanUp(ticker);
 }
 

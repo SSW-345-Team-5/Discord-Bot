@@ -8,8 +8,8 @@ from docxtpl import DocxTemplate, InlineImage
 if __name__ == "__main__":
     ticker = sys.argv[1]
 
-    in_file = "commands/report/report.docx"
-    out_file_docx = f"commands/report/{ticker}_report.docx"
+    in_file = "commands/sreport/report.docx"
+    out_file_docx = f"commands/sreport/{ticker}_report.docx"
     # out_file_pdf = f"commands/report/{ticker}_report.pdf"
 
     doc = DocxTemplate(in_file)
