@@ -18,7 +18,7 @@ client.categories = fs.readdirSync("./commands/");
 
 client.on("ready", async () => {
   console.log(`${client.user.username} is online!`);
-  client.user.setActivity('!help', {type: 'STREAMING'});
+  client.user.setActivity('t.help', {type: 'STREAMING'});
 });
 
 client.on("message", async message => {
