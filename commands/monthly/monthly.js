@@ -23,12 +23,12 @@ module.exports = {
       });
     }
   },
-  monthlyData: (message, ticker) => {
-    return monthlyData(message, ticker);
+  monthlyData: (client, message, ticker) => {
+    return monthlyData(client, message, ticker);
   },
   monthlyCleanUp: (ticker) => {
     return monthlyCleanUp(ticker);
-  },
+  }, 
 };
 
 function monthlyData(client, message, ticker) {
@@ -42,20 +42,18 @@ function monthlyData(client, message, ticker) {
   };
 
   var options = {
-    pythonOptions: ["-u"], // get print results in real-time
+    pythonOptions: ["-u"],
     scriptPath: "./commands/monthly/",
     args: ticker,
   };
 
-  const path = "chart.py";
-
-  console.log("script");
+  const path = "monthly_chart.py";
 
   return new Promise((resolve, reject) => {
     alpha.data
       .monthly(ticker)
       .catch(() => {
-        stockErr.stockNotFound(message, ticker);
+        stockErr.stockNotFound(client, message, ticker);
       })
       .then((data) => {
         writeFilePromise(
