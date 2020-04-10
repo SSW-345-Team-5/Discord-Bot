@@ -19,11 +19,12 @@ if __name__ == "__main__":
 
     graph_size = docx.shared.Inches(4)
 
-    # Intraday Data
+    # Header
     date = datetime.now().strftime("%m/%d/%y")
 
     time = datetime.now().strftime("%H:%M:%S")
 
+    # Intraday Data
     intraday_graph = InlineImage(
         doc, f'commands/intraday/{ticker}.png', graph_size)
 
@@ -57,11 +58,44 @@ if __name__ == "__main__":
         intraday_avg_price = round(intraday_avg_price, 2)
         intraday_delta = round(intraday_close - intraday_open, 2)
 
+    # Monthly Data
     monthly_graph = InlineImage(
         doc, f'commands/monthly/{ticker}.png', graph_size)
 
-    context = {'ticker': ticker.upper(), 'date': date, 'time': time, 'intraday_graph': intraday_graph, 'intraday_open': intraday_open, 'intraday_close': intraday_close, 'intraday_high': intraday_high, 'intraday_low': intraday_low, 'intraday_delta': intraday_delta, 'intraday_avg': intraday_avg_price, 'intraday_vol': intraday_volume,
-               'monthly_graph': monthly_graph}
+    monthly_close = monthly_open = monthly_high = monthly_volume = monthly_avg_price = monthly_delta = 0
+
+    monthly_low = sys.maxsize
+
+    with open(f'commands/monthly/{ticker}.json', mode='r') as data_file:
+        data_dict = json.load(data_file)
+        time_series = data_dict['Monthly Time Series']
+        keys = list(time_series.keys())
+
+        monthly_close = float(time_series[keys[0]]["4. close"])
+        monthly_open = round(
+            float(time_series[keys[len(time_series)-1]]["1. open"]), 2)
+
+        for timestamp, data in time_series.items():
+
+            if float(data["2. high"]) > monthly_high:
+                monthly_high = float(data["2. high"])
+
+            if float(data["3. low"]) < monthly_low:
+                monthly_low = float(data["3. low"])
+
+            monthly_volume += int(data["5. volume"])
+
+            monthly_avg_price += float(data["4. close"])
+
+        monthly_avg_price /= len(time_series)
+        monthly_avg_price = round(monthly_avg_price, 2)
+        monthly_delta = round(monthly_close - monthly_open, 2)
+
+    context = {'ticker': ticker.upper(), 'date': date, 'time': time, 'intraday_graph': intraday_graph, 'intraday_open': intraday_open,
+               'intraday_close': intraday_close, 'intraday_high': intraday_high, 'intraday_low': intraday_low, 'intraday_delta': intraday_delta, 
+               'intraday_avg': intraday_avg_price, 'intraday_vol': intraday_volume, 'monthly_graph': monthly_graph, 'monthly_open': monthly_open, 
+               'monthly_close': monthly_close, 'monthly_high': monthly_high, 'monthly_low': monthly_low, 'monthly_delta': monthly_delta, 
+               'monthly_avg': monthly_avg_price, 'monthly_vol': monthly_volume, }
 
     doc.render(context)
     doc.save(out_file_docx)
