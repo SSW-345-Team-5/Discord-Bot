@@ -6,6 +6,8 @@ const botconfig = require("./../../botconfig.json");
 const key = botconfig.alphavantage_key;
 const alpha = require("alphavantage")({ key: key });
 
+const writeFile = require('../../writeFile.js');
+
 module.exports = {
   name: "intraday",
   aliases: ["in"],
@@ -32,14 +34,6 @@ module.exports = {
 };
 
 function intradayData(client, message, ticker) {
-  const writeFilePromise = (file, data) => {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(file, data, (error) => {
-        if (error) reject(error);
-        resolve();
-      });
-    });
-  };
 
   var options = {
     pythonOptions: ["-u"],
@@ -56,7 +50,7 @@ function intradayData(client, message, ticker) {
         stockErr.stockNotFound(client, message, ticker);
       })
       .then((data) => {
-        writeFilePromise(
+        writeFile.write(
           `commands/intraday/${ticker}.json`,
           JSON.stringify(data)
         ).then(() => {

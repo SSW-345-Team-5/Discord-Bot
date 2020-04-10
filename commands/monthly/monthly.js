@@ -6,6 +6,8 @@ const botconfig = require("./../../botconfig.json");
 const key = botconfig.alphavantage_key;
 const alpha = require("alphavantage")({ key: key });
 
+const writeFile = require('../../writeFile.js');
+
 module.exports = {
   name: "monthly",
   aliases: ["mo"],
@@ -28,18 +30,10 @@ module.exports = {
   },
   monthlyCleanUp: (ticker) => {
     return monthlyCleanUp(ticker);
-  }, 
+  },
 };
 
 function monthlyData(client, message, ticker) {
-  const writeFilePromise = (file, data) => {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(file, data, (error) => {
-        if (error) reject(error);
-        resolve();
-      });
-    });
-  };
 
   var options = {
     pythonOptions: ["-u"],
@@ -56,7 +50,7 @@ function monthlyData(client, message, ticker) {
         stockErr.stockNotFound(client, message, ticker);
       })
       .then((data) => {
-        writeFilePromise(
+        writeFile.write(
           `commands/monthly/${ticker}.json`,
           JSON.stringify(data)
         ).then(() => {
