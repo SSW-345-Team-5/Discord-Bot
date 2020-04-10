@@ -1,11 +1,11 @@
 module.exports = {
-  stockNotFound: (message, ticker) => {
-    return stockNotFound(message, ticker);
+  stockNotFound: (client, message, ticker) => {
+    return stockNotFound(client, message, ticker);
   }
 };
 
-function stockNotFound(message, ticker) {
-  message.channel.send(`Error: ${ticker} is not a valid stock`);
+function stockNotFound(client, message, ticker) {
+  message.channel.send(`Error: ${ticker.toUpperCase()} is not a valid stock`);
   throw getBreakChainError();
 }
 

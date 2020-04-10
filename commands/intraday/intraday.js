@@ -14,28 +14,27 @@ module.exports = {
     "Rreturns intraday time series (timestamp, open, high, low, close, volume) of the equity specified.",
   usage: "<ticker>",
   run: async (client, message, args) => {
-    if (args.length < 1)
-      return message.channel.send("Usage: <ticker>");
+    if (args.length < 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 
-      intradayData(message, ticker).then(() => {
+      intradayData(client, message, ticker).then(() => {
         intradayDisplay(client, message, ticker);
       });
     }
   },
-  intradayData: (message, ticker) => {
-    return intradayData(message, ticker);
+  intradayData: (client, message, ticker) => {
+    return intradayData(client, message, ticker);
   },
-  intradayCleanUp: ticker => {
+  intradayCleanUp: (ticker) => {
     return intradayCleanUp(ticker);
-  }
+  },
 };
 
-function intradayData(message, ticker) {
+function intradayData(client, message, ticker) {
   const writeFilePromise = (file, data) => {
     return new Promise((resolve, reject) => {
-      fs.writeFile(file, data, error => {
+      fs.writeFile(file, data, (error) => {
         if (error) reject(error);
         resolve();
       });
@@ -43,20 +42,20 @@ function intradayData(message, ticker) {
   };
 
   var options = {
-    pythonOptions: ["-u"], // get print results in real-time
+    pythonOptions: ["-u"],
     scriptPath: "./commands/intraday/",
-    args: ticker
+    args: ticker,
   };
 
-  const path = "chart.py";
+  const path = "intraday_chart.py";
 
   return new Promise((resolve, reject) => {
     alpha.data
       .intraday(ticker, "15min")
       .catch(() => {
-        stockErr.stockNotFound(message, ticker);
+        stockErr.stockNotFound(client, message, ticker);
       })
-      .then(data => {
+      .then((data) => {
         writeFilePromise(
           `commands/intraday/${ticker}.json`,
           JSON.stringify(data)
@@ -86,7 +85,7 @@ function intradayDisplay(client, message, ticker) {
 }
 
 function intradayCleanUp(ticker) {
-  const cb = function(err) {
+  const cb = function (err) {
     if (err) console.log(err);
   };
   fs.unlink(`commands/intraday/${ticker}.json`, cb);
