@@ -8,8 +8,10 @@ from datetime import datetime
 
 
 if __name__ == "__main__":
+    # Stock Ticker
     ticker = sys.argv[1]
 
+    # File paths
     in_file = "commands/sreport/report.docx"
     out_file_docx = f"commands/sreport/{ticker}_report.docx"
 
@@ -17,6 +19,7 @@ if __name__ == "__main__":
 
     graph_size = docx.shared.Inches(4)
 
+    # Intraday Data
     date = datetime.now().strftime("%m/%d/%y")
 
     time = datetime.now().strftime("%H:%M:%S")
@@ -49,7 +52,6 @@ if __name__ == "__main__":
             intraday_volume += int(data["5. volume"])
 
             intraday_avg_price += float(data["4. close"])
-
 
         intraday_avg_price /= len(time_series)
         intraday_avg_price = round(intraday_avg_price, 2)
