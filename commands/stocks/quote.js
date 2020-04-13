@@ -2,7 +2,7 @@ const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fs = require("fs");
 
 const stockErr = require("../../stockNotFound.js");
-const botconfig = require("./../../botconfig.json");
+const botconfig = require("../../botconfig.json");
 const key = botconfig.alphavantage_key;
 const alpha = require("alphavantage")({ key: key });
 

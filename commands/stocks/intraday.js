@@ -44,7 +44,7 @@ function intradayData(client, message, ticker) {
 
   var options = {
     pythonOptions: ["-u"],
-    scriptPath: "./stocks/stocks/",
+    scriptPath: "./commands/stocks/",
     args: ticker,
   };
 

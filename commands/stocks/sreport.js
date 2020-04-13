@@ -25,18 +25,16 @@ module.exports = {
   },
 };
 
-
 async function reportData(client, message, input) {
   const ticker = input.toLowerCase();
 
   var options = {
-    pythonOptions: ["-u"], 
-    scriptPath: "./commands/sreport/",
+    pythonOptions: ["-u"],
+    scriptPath: "./commands/stocks/",
     args: [ticker],
   };
 
   var path = "sreport.py";
-
 
   await intraData.intradayData(client, message, ticker);
   await monthData.monthlyData(client, message, ticker);
@@ -56,7 +54,7 @@ async function reportData(client, message, input) {
 
 function displayReport(client, message, ticker) {
   const attachment = new MessageAttachment(
-    `./commands/sreport/${ticker}_report.docx`
+    `./commands/stocks/${ticker}_report.docx`
   );
 
   return message.channel.send({ files: [attachment] }).then(() => {
@@ -68,8 +66,8 @@ function cleanUp(ticker) {
   const cb = function (err) {
     if (err) console.log(err);
   };
-  fs.unlink(`./commands/sreport/${ticker}_report.docx`, cb);
-  intraData.intradayCleanUp();
-  monthData.monthlyCleanUp();
-  quoteData.quoteCleanUp();
+  fs.unlink(`./commands/stocks/${ticker}_report.docx`, cb);
+  intraData.intradayCleanUp(ticker);
+  monthData.monthlyCleanUp(ticker);
+  quoteData.quoteCleanUp(ticker);
 }
