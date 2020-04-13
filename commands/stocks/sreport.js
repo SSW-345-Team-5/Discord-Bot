@@ -1,16 +1,16 @@
 const { MessageAttachment } = require("discord.js");
 const fs = require("fs");
 
-const quoteData = require("../quote/quote.js");
-const intraData = require("../intraday/intraday.js");
-const monthData = require("../monthly/monthly.js");
+const quoteData = require("./quote.js");
+const intraData = require("./intraday.js");
+const monthData = require("./monthly.js");
 
 const python = require("../../pythonRun.js");
 
 module.exports = {
   name: "sreport",
   aliases: ["srpt"],
-  category: "sreport",
+  category: "stocks",
   description: "Returns the aggregate analysis data for a stock",
   usage: "<ticker>",
   run: async (client, message, args) => {
@@ -24,6 +24,7 @@ module.exports = {
     }
   },
 };
+
 
 async function reportData(client, message, input) {
   const ticker = input.toLowerCase();
@@ -67,8 +68,8 @@ function cleanUp(ticker) {
   const cb = function (err) {
     if (err) console.log(err);
   };
-  fs.unlink(`commands/sreport/${ticker}_report.docx`, cb);
-  intraData.intradayCleanUp(ticker);
-  monthData.monthlyCleanUp(ticker);
-  quoteData.quoteCleanUp(ticker);
+  fs.unlink(`./commands/sreport/${ticker}_report.docx`, cb);
+  intraData.intradayCleanUp();
+  monthData.monthlyCleanUp();
+  quoteData.quoteCleanUp();
 }

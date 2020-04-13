@@ -9,7 +9,7 @@ const alpha = require("alphavantage")({ key: key });
 module.exports = {
   name: "monthly",
   aliases: ["mo"],
-  category: "monthly",
+  category: "stocks",
   description:
     "Returns monthly time series (last trading day of each month, monthly open, monthly high, monthly low, monthly close, monthly volume) of the global equity specified, covering 20+ years of historical data.",
   usage: "<ticker>",
@@ -28,7 +28,7 @@ module.exports = {
   },
   monthlyCleanUp: (ticker) => {
     return monthlyCleanUp(ticker);
-  }, 
+  },
 };
 
 function monthlyData(client, message, ticker) {
@@ -43,7 +43,7 @@ function monthlyData(client, message, ticker) {
 
   var options = {
     pythonOptions: ["-u"],
-    scriptPath: "./commands/monthly/",
+    scriptPath: "./commands/stocks/",
     args: ticker,
   };
 
@@ -56,10 +56,7 @@ function monthlyData(client, message, ticker) {
         stockErr.stockNotFound(client, message, ticker);
       })
       .then((data) => {
-        writeFilePromise(
-          `commands/monthly/${ticker}.json`,
-          JSON.stringify(data)
-        ).then(() => {
+        writeFilePromise(`commands/stocks/${ticker}_monthly.json`, JSON.stringify(data)).then(() => {
           python
             .pythonRun(path, options)
             .then(() => resolve())
@@ -72,7 +69,7 @@ function monthlyData(client, message, ticker) {
 function monthlyDisplay(client, message, ticker) {
   const embed = new MessageEmbed();
 
-  const attachment = new MessageAttachment(`commands/monthly/${ticker}.png`);
+  const attachment = new MessageAttachment(`commands/stocks/${ticker}_monthly.png`);
 
   embed.image = { url: `attachment://${ticker}.png` };
   embed.setColor("BLUE");
@@ -88,6 +85,6 @@ function monthlyCleanUp(ticker) {
   const cb = function (err) {
     if (err) console.log(err);
   };
-  fs.unlink(`commands/monthly/${ticker}.json`, cb);
-  fs.unlink(`commands/monthly/${ticker}.png`, cb);
+  fs.unlink(`commands/stocks/${ticker}_monthly.json`, cb);
+  fs.unlink(`commands/stocks/${ticker}_monthly.png`, cb);
 }
