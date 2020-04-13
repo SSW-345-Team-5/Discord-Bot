@@ -2,36 +2,37 @@ const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fs = require("fs");
 const python = require("../../pythonRun.js");
 const stockErr = require("../../stockNotFound.js");
-const botconfig = require("./../../botconfig.json");
+const botconfig = require("../../botconfig.json");
 const key = botconfig.alphavantage_key;
 const alpha = require("alphavantage")({ key: key });
 
 module.exports = {
-  name: "monthly",
-  aliases: ["mo"],
-  category: "monthly",
+  name: "intraday",
+  aliases: ["in"],
+  category: "stocks",
   description:
-    "Returns monthly time series (last trading day of each month, monthly open, monthly high, monthly low, monthly close, monthly volume) of the global equity specified, covering 20+ years of historical data.",
+    "Rreturns intraday time series (timestamp, open, high, low, close, volume) of the equity specified.",
   usage: "<ticker>",
   run: async (client, message, args) => {
     if (args.length < 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 
-      monthlyData(client, message, ticker).then(() => {
-        monthlyDisplay(client, message, ticker);
+      intradayData(client, message, ticker).then(() => {
+        intradayDisplay(client, message, ticker);
       });
     }
   },
-  monthlyData: (client, message, ticker) => {
-    return monthlyData(client, message, ticker);
+  intradayData: (client, message, ticker) => {
+    return intradayData(client, message, ticker);
   },
-  monthlyCleanUp: (ticker) => {
-    return monthlyCleanUp(ticker);
-  }, 
+  intradayCleanUp: (ticker) => {
+    const output_png = `commands/stocks/${ticker}_intraday.png`;
+    return intradayCleanUp(ticker);
+  },
 };
 
-function monthlyData(client, message, ticker) {
+function intradayData(client, message, ticker) {
   const writeFilePromise = (file, data) => {
     return new Promise((resolve, reject) => {
       fs.writeFile(file, data, (error) => {
@@ -43,23 +44,20 @@ function monthlyData(client, message, ticker) {
 
   var options = {
     pythonOptions: ["-u"],
-    scriptPath: "./commands/monthly/",
+    scriptPath: "./commands/stocks/",
     args: ticker,
   };
 
-  const path = "monthly_chart.py";
+  const path = "intraday_chart.py";
 
   return new Promise((resolve, reject) => {
     alpha.data
-      .monthly(ticker)
+      .intraday(ticker, "15min")
       .catch(() => {
         stockErr.stockNotFound(client, message, ticker);
       })
       .then((data) => {
-        writeFilePromise(
-          `commands/monthly/${ticker}.json`,
-          JSON.stringify(data)
-        ).then(() => {
+        writeFilePromise(`commands/stocks/${ticker}_intraday.json`, JSON.stringify(data)).then(() => {
           python
             .pythonRun(path, options)
             .then(() => resolve())
@@ -69,25 +67,25 @@ function monthlyData(client, message, ticker) {
   });
 }
 
-function monthlyDisplay(client, message, ticker) {
+function intradayDisplay(client, message, ticker) {
   const embed = new MessageEmbed();
 
-  const attachment = new MessageAttachment(`commands/monthly/${ticker}.png`);
+  const attachment = new MessageAttachment(`commands/stocks/${ticker}_intraday.png`);
 
-  embed.image = { url: `attachment://${ticker}.png` };
+  embed.image = { url: `attachment://${ticker}_intraday.png` };
   embed.setColor("BLUE");
 
   return message.channel
     .send({ files: [attachment], embed: embed })
     .then(() => {
-      monthlyCleanUp(ticker);
+      intradayCleanUp(ticker);
     });
 }
 
-function monthlyCleanUp(ticker) {
+function intradayCleanUp(ticker) {
   const cb = function (err) {
     if (err) console.log(err);
   };
-  fs.unlink(`commands/monthly/${ticker}.json`, cb);
-  fs.unlink(`commands/monthly/${ticker}.png`, cb);
+  fs.unlink(`commands/stocks/${ticker}_intraday.json`, cb);
+  fs.unlink(`commands/stocks/${ticker}_intraday.png`, cb);
 }

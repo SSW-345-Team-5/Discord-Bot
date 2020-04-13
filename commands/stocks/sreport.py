@@ -12,8 +12,8 @@ if __name__ == "__main__":
     ticker = sys.argv[1]
 
     # File paths
-    in_file = "commands/sreport/report.docx"
-    out_file_docx = f"commands/sreport/{ticker}_report.docx"
+    in_file = "commands/stocks/report.docx"
+    out_file_docx = f"commands/stocks/{ticker}_report.docx"
 
     doc = DocxTemplate(in_file)
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # Quote Data
     quote_open = quote_high = quote_low = quote_price = quote_volume = quote_last_day = quote_last_close = quote_change = quote_change_percent = 0
 
-    with open(f'commands/quote/{ticker}.json', mode='r') as data_file:
+    with open(f'commands/stocks/{ticker}_quote.json', mode='r') as data_file:
         data_dict = json.load(data_file)
         quote = data_dict["Global Quote"]
 
@@ -43,13 +43,13 @@ if __name__ == "__main__":
 
     # Intraday Data
     intraday_graph = InlineImage(
-        doc, f'commands/intraday/{ticker}.png', graph_size)
+        doc, f'commands/stocks/{ticker}_intraday.png', graph_size)
 
     intraday_close = intraday_open = intraday_high = intraday_volume = intraday_avg_price = intraday_change = 0
 
     intraday_low = sys.maxsize
 
-    with open(f'commands/intraday/{ticker}.json', mode='r') as data_file:
+    with open(f'commands/stocks/{ticker}_intraday.json', mode='r') as data_file:
         data_dict = json.load(data_file)
         interval = data_dict["Meta Data"]["4. Interval"]
         time_series = data_dict[f'Time Series ({interval})']
@@ -77,13 +77,13 @@ if __name__ == "__main__":
 
     # Monthly Data
     monthly_graph = InlineImage(
-        doc, f'commands/monthly/{ticker}.png', graph_size)
+        doc, f'commands/stocks/{ticker}_monthly.png', graph_size)
 
     monthly_close = monthly_open = monthly_high = monthly_volume = monthly_avg_price = monthly_change = 0
 
     monthly_low = sys.maxsize
 
-    with open(f'commands/monthly/{ticker}.json', mode='r') as data_file:
+    with open(f'commands/stocks/{ticker}_monthly.json', mode='r') as data_file:
         data_dict = json.load(data_file)
         time_series = data_dict['Monthly Time Series']
         keys = list(time_series.keys())
