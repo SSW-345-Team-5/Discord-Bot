@@ -28,8 +28,8 @@ module.exports = {
       var time_interval = args[1].toLowerCase();
       var series_type = args[2].toLowerCase();
 
-      CCI(client, message, ticker, time_interval, series_type);
-
+      runAll(client, message, ticker, time_interval, series_type);
+      
       // intradayData(client, message, ticker).then(() => {
       //   intradayDisplay(client, message, ticker);
       // });
@@ -163,7 +163,7 @@ function RSI(client, message, ticker, time_interval, series_type) {
   });
 }
 
-function CCI(client, message, ticker, time_interval, series_type) {
+function CCI(client, message, ticker, time_interval) {
   return new Promise((resolve, reject) => {
     alpha.technical
       .cci(ticker, time_interval, 100)
@@ -185,6 +185,14 @@ function CCI(client, message, ticker, time_interval, series_type) {
   });
 }
 
+function runAll(client, message, ticker, time_interval, series_type) {
+  SMA(client, message, ticker, time_interval, series_type);
+  EMA(client, message, ticker, time_interval, series_type);
+  WMA(client, message, ticker, time_interval, series_type);
+  MACD(client, message, ticker, time_interval, series_type);
+  RSI(client, message, ticker, time_interval, series_type);
+  CCI(client, message, ticker, time_interval);
+}
 
 function intradayData(client, message, ticker) {
   const writeFilePromise = (file, data) => {
