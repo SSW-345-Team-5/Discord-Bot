@@ -11,10 +11,10 @@ module.exports = {
   name: "sreport",
   aliases: ["srpt"],
   category: "stocks",
-  description: "Returns the aggregate analysis data for a stock",
+  description: "Returns the aggregate analysis data for a stock.",
   usage: "<ticker>",
   run: async (client, message, args) => {
-    if (args.length < 1) return message.channel.send("Usage: <ticker>");
+    if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 
