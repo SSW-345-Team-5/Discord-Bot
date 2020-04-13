@@ -1,6 +1,7 @@
 const { MessageAttachment } = require("discord.js");
 const fs = require("fs");
 
+const quoteData = require("../quote/quote.js");
 const intraData = require("../intraday/intraday.js");
 const monthData = require("../monthly/monthly.js");
 
@@ -38,6 +39,7 @@ async function reportData(client, message, input) {
 
   await intraData.intradayData(client, message, ticker);
   await monthData.monthlyData(client, message, ticker);
+  await quoteData.quoteData(client, message, ticker);
 
   return new Promise((resolve, reject) => {
     python
@@ -68,4 +70,5 @@ function cleanUp(ticker) {
   fs.unlink(`commands/sreport/${ticker}_report.docx`, cb);
   intraData.intradayCleanUp(ticker);
   monthData.monthlyCleanUp(ticker);
+  quoteData.quoteCleanUp(ticker);
 }

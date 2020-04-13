@@ -1,6 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fs = require("fs");
-const python = require("../../pythonRun.js");
+
 const stockErr = require("../../stockNotFound.js");
 const botconfig = require("./../../botconfig.json");
 const key = botconfig.alphavantage_key;
@@ -21,7 +21,6 @@ module.exports = {
       var ticker = args[0].toLowerCase();
 
       quoteData(client, message, ticker).then(() => {
-        console.log("2 " + returnedData);
         quoteDisplay(client, message, ticker, returnedData);
       });
     }
@@ -56,7 +55,6 @@ function quoteData(client, message, ticker) {
           JSON.stringify(data)
         ).then(() => {
           returnedData = JSON.stringify(data)
-          console.log("1 " + returnedData);
           resolve();
         })
         .catch(() => {
@@ -72,7 +70,7 @@ function quoteDisplay(client, message, ticker, data) {
 
   embed.setColor("GREEN");
 
-  embed.setAuthor(ticker);
+  embed.setAuthor(ticker.toUpperCase());
   for(var key in obj){
     if(obj.hasOwnProperty(key) && key !== "01. symbol"){
       embed.addField(key.slice(3), obj[key], true)

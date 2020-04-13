@@ -24,11 +24,28 @@ if __name__ == "__main__":
 
     time = datetime.now().strftime("%H:%M:%S")
 
+    # Quote Data
+    quote_open = quote_high = quote_low = quote_price = quote_volume = quote_last_day = quote_last_close = quote_change = quote_change_percent = 0
+
+    with open(f'commands/quote/{ticker}.json', mode='r') as data_file:
+        data_dict = json.load(data_file)
+        quote = data_dict["Global Quote"]
+
+        quote_open = round(float(quote["02. open"]), 2)
+        quote_high = round(float(quote["03. high"]), 2)
+        quote_low = round(float(quote["04. low"]), 2)
+        quote_price = round(float(quote["05. price"]), 2)
+        quote_volume = quote["06. volume"]
+        quote_last_day = quote["07. latest trading day"]
+        quote_last_close = round(float(quote["08. previous close"]), 2)
+        quote_change = round(float(quote["09. change"]), 2)
+        quote_change_percent = quote["10. change percent"]
+
     # Intraday Data
     intraday_graph = InlineImage(
         doc, f'commands/intraday/{ticker}.png', graph_size)
 
-    intraday_close = intraday_open = intraday_high = intraday_volume = intraday_avg_price = intraday_delta = 0
+    intraday_close = intraday_open = intraday_high = intraday_volume = intraday_avg_price = intraday_change = 0
 
     intraday_low = sys.maxsize
 
@@ -56,13 +73,13 @@ if __name__ == "__main__":
 
         intraday_avg_price /= len(time_series)
         intraday_avg_price = round(intraday_avg_price, 2)
-        intraday_delta = round(intraday_close - intraday_open, 2)
+        intraday_change = round(intraday_close - intraday_open, 2)
 
     # Monthly Data
     monthly_graph = InlineImage(
         doc, f'commands/monthly/{ticker}.png', graph_size)
 
-    monthly_close = monthly_open = monthly_high = monthly_volume = monthly_avg_price = monthly_delta = 0
+    monthly_close = monthly_open = monthly_high = monthly_volume = monthly_avg_price = monthly_change = 0
 
     monthly_low = sys.maxsize
 
@@ -89,13 +106,15 @@ if __name__ == "__main__":
 
         monthly_avg_price /= len(time_series)
         monthly_avg_price = round(monthly_avg_price, 2)
-        monthly_delta = round(monthly_close - monthly_open, 2)
+        monthly_change = round(monthly_close - monthly_open, 2)
 
-    context = {'ticker': ticker.upper(), 'date': date, 'time': time, 'intraday_graph': intraday_graph, 'intraday_open': intraday_open,
-               'intraday_close': intraday_close, 'intraday_high': intraday_high, 'intraday_low': intraday_low, 'intraday_delta': intraday_delta, 
-               'intraday_avg': intraday_avg_price, 'intraday_vol': intraday_volume, 'monthly_graph': monthly_graph, 'monthly_open': monthly_open, 
-               'monthly_close': monthly_close, 'monthly_high': monthly_high, 'monthly_low': monthly_low, 'monthly_delta': monthly_delta, 
-               'monthly_avg': monthly_avg_price, 'monthly_vol': monthly_volume, }
+    context = {'ticker': ticker.upper(), 'date': date, 'time': time, 'quote_open': quote_open, 'quote_price1': quote_price, 'quote_high': quote_high, 'quote_low': quote_low,
+               'quote_volume': quote_volume, 'quote_last_day': quote_last_day, 'quote_last_close': quote_last_close, 'quote_change': quote_change,
+               'quote_change_percent': quote_change_percent,  'intraday_graph': intraday_graph, 'intraday_open': intraday_open,
+               'intraday_close': intraday_close, 'intraday_high': intraday_high, 'intraday_low': intraday_low, 'intraday_change': intraday_change,
+               'intraday_avg_price': intraday_avg_price, 'intraday_volume': intraday_volume, 'monthly_graph': monthly_graph, 'monthly_open': monthly_open,
+               'monthly_close': monthly_close, 'monthly_high': monthly_high, 'monthly_low': monthly_low, 'monthly_change': monthly_change,
+               'monthly_avg_price': monthly_avg_price, 'monthly_volume': monthly_volume}
 
     doc.render(context)
     doc.save(out_file_docx)
