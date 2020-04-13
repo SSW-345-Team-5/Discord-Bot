@@ -28,7 +28,7 @@ module.exports = {
       var time_interval = args[1].toLowerCase();
       var series_type = args[2].toLowerCase();
 
-      MACD(client, message, ticker, time_interval, series_type);
+      RSI(client, message, ticker, time_interval, series_type);
 
       // intradayData(client, message, ticker).then(() => {
       //   intradayDisplay(client, message, ticker);
@@ -140,6 +140,29 @@ function MACD(client, message, ticker, time_interval, series_type) {
       });
   });
 }
+
+function RSI(client, message, ticker, time_interval, series_type) {
+  return new Promise((resolve, reject) => {
+    alpha.technical
+      .rsi(ticker, time_interval, 100, series_type)
+      .catch(() => {
+        stockErr.stockNotFound(client, message, ticker);
+      })
+      .then((data) => {
+        writeFilePromise(
+          `commands/indicator/${ticker}_${time_interval}_RSI.json`,
+          JSON.stringify(data)
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      });
+  });
+}
+
 
 
 
