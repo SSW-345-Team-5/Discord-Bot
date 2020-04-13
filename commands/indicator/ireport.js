@@ -28,7 +28,7 @@ module.exports = {
       var time_interval = args[1].toLowerCase();
       var series_type = args[2].toLowerCase();
 
-      WMA(client, message, ticker, time_interval, series_type);
+      MACD(client, message, ticker, time_interval, series_type);
 
       // intradayData(client, message, ticker).then(() => {
       //   intradayDisplay(client, message, ticker);
@@ -107,6 +107,28 @@ function WMA(client, message, ticker, time_interval, series_type) {
       .then((data) => {
         writeFilePromise(
           `commands/indicator/${ticker}_${time_interval}_WMA.json`,
+          JSON.stringify(data)
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      });
+  });
+}
+
+function MACD(client, message, ticker, time_interval, series_type) {
+  return new Promise((resolve, reject) => {
+    alpha.technical
+      .macd(ticker, time_interval, series_type)
+      .catch(() => {
+        stockErr.stockNotFound(client, message, ticker);
+      })
+      .then((data) => {
+        writeFilePromise(
+          `commands/indicator/${ticker}_${time_interval}_MACD.json`,
           JSON.stringify(data)
         )
           .then(() => {
