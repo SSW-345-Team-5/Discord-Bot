@@ -28,7 +28,11 @@ module.exports = {
       var time_interval = args[1].toLowerCase();
       var series_type = args[2].toLowerCase();
 
-      indicatorData(client, message, ticker, time_interval, series_type);
+      indicatorData(client, message, ticker, time_interval, series_type).then(
+        () => {
+          indicatorDisplay(client, message, ticker);
+        }
+      );
 
       // intradayData(client, message, ticker).then(() => {
       //   intradayDisplay(client, message, ticker);
@@ -57,7 +61,7 @@ function SMA(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
       .sma(ticker, time_interval, 50, series_type)
-      .catch(err => {
+      .catch((err) => {
         // stockErr.stockNotFound(client, message, ticker);
         console.log(err);
       })
@@ -80,10 +84,9 @@ function EMA(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
       .ema(ticker, time_interval, 50, series_type)
-      .catch(err => {
+      .catch((err) => {
         // stockErr.stockNotFound(client, message, ticker);
         console.log(err);
-
       })
       .then((data) => {
         writeFilePromise(
@@ -104,10 +107,9 @@ function MACD(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
       .macd(ticker, time_interval, series_type)
-      .catch(err => {
+      .catch((err) => {
         // stockErr.stockNotFound(client, message, ticker);
         console.log(err);
-
       })
       .then((data) => {
         writeFilePromise(
@@ -128,10 +130,9 @@ function RSI(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
       .rsi(ticker, time_interval, 50, series_type)
-      .catch(err => {
+      .catch((err) => {
         // stockErr.stockNotFound(client, message, ticker);
         console.log(err);
-
       })
       .then((data) => {
         writeFilePromise(
@@ -152,10 +153,9 @@ function CCI(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
       .cci(ticker, time_interval, 50)
-      .catch(err => {
+      .catch((err) => {
         // stockErr.stockNotFound(client, message, ticker);
         console.log(err);
-
       })
       .then((data) => {
         writeFilePromise(
@@ -172,14 +172,18 @@ function CCI(client, message, ticker, time_interval, series_type) {
   });
 }
 
-async function indicatorData(client, message, ticker, time_interval, series_type) {
-
+async function indicatorData(
+  client,
+  message,
+  ticker,
+  time_interval,
+  series_type
+) {
   await SMA(client, message, ticker, time_interval, series_type);
   await EMA(client, message, ticker, time_interval, series_type);
   await MACD(client, message, ticker, time_interval, series_type);
   await RSI(client, message, ticker, time_interval, series_type);
   await CCI(client, message, ticker, time_interval, series_type);
-
 
   var options = {
     pythonOptions: ["-u"],
@@ -201,66 +205,19 @@ async function indicatorData(client, message, ticker, time_interval, series_type
   });
 }
 
+function indicatorDisplay(client, message, ticker) {
+  const attachment = new MessageAttachment(
+    `./commands/indicator/${ticker}_ireport.docx`
+  );
 
-function intradayData(client, message, ticker) {
-  const writeFilePromise = (file, data) => {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(file, data, (error) => {
-        if (error) reject(error);
-        resolve();
-      });
-    });
-  };
-
-  var options = {
-    pythonOptions: ["-u"],
-    scriptPath: "./commands/stocks/",
-    args: ticker,
-  };
-
-  const path = "intraday_chart.py";
-
-  return new Promise((resolve, reject) => {
-    alpha.data
-      .intraday(ticker, "15min")
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
-      })
-      .then((data) => {
-        writeFilePromise(
-          `commands/stocks/${ticker}_intraday.json`,
-          JSON.stringify(data)
-        ).then(() => {
-          python
-            .pythonRun(path, options)
-            .then(() => resolve())
-            .catch(() => reject());
-        });
-      });
+  return message.channel.send({ files: [attachment] }).then(() => {
+    indicatorCleanUp(ticker);
   });
 }
 
-function intradayDisplay(client, message, ticker) {
-  const embed = new MessageEmbed();
-
-  const attachment = new MessageAttachment(
-    `commands/stocks/${ticker}_intraday.png`
-  );
-
-  embed.image = { url: `attachment://${ticker}_intraday.png` };
-  embed.setColor("BLUE");
-
-  return message.channel
-    .send({ files: [attachment], embed: embed })
-    .then(() => {
-      intradayCleanUp(ticker);
-    });
-}
-
-function intradayCleanUp(ticker) {
+function indicatorCleanUp(ticker) {
   const cb = function (err) {
     if (err) console.log(err);
   };
-  fs.unlink(`commands/stocks/${ticker}_intraday.json`, cb);
-  fs.unlink(`commands/stocks/${ticker}_intraday.png`, cb);
+  fs.unlink(`commands/indicator/${ticker}_ireport.docx`, cb);
 }
