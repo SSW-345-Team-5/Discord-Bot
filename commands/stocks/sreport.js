@@ -19,7 +19,7 @@ module.exports = {
       var ticker = args[0].toLowerCase();
 
       reportData(client, message, ticker).then(() => {
-        displayReport(client, message, ticker);
+        reportDisplay(client, message, ticker);
       });
     }
   },
@@ -52,7 +52,7 @@ async function reportData(client, message, input) {
   });
 }
 
-function displayReport(client, message, ticker) {
+function reportDisplay(client, message, ticker) {
   const attachment = new MessageAttachment(
     `./commands/stocks/${ticker}_report.docx`
   );
