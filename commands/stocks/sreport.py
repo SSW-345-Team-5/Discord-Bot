@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     # File paths
     in_file = "commands/stocks/report.docx"
-    out_file_docx = f"commands/stocks/{ticker}_report.docx"
+    out_file_docx = f"commands/stocks/{ticker}_sreport.docx"
 
     doc = DocxTemplate(in_file)
 

@@ -54,7 +54,7 @@ async function reportData(client, message, input) {
 
 function reportDisplay(client, message, ticker) {
   const attachment = new MessageAttachment(
-    `./commands/stocks/${ticker}_report.docx`
+    `./commands/stocks/${ticker}_sreport.docx`
   );
 
   return message.channel.send({ files: [attachment] }).then(() => {
@@ -66,7 +66,7 @@ function cleanUp(ticker) {
   const cb = function (err) {
     if (err) console.log(err);
   };
-  fs.unlink(`./commands/stocks/${ticker}_report.docx`, cb);
+  fs.unlink(`./commands/stocks/${ticker}_sreport.docx`, cb);
   intraData.intradayCleanUp(ticker);
   monthData.monthlyCleanUp(ticker);
   quoteData.quoteCleanUp(ticker);
