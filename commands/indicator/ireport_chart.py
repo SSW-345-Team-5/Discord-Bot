@@ -2,7 +2,6 @@ import sys
 import os
 import docx
 import json
-import pdfkit
 import pandas as pd
 import matplotlib.pyplot as plt
 from docxtpl import DocxTemplate, InlineImage
