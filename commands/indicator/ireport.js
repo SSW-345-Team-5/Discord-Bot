@@ -28,8 +28,8 @@ module.exports = {
       var time_interval = args[1].toLowerCase();
       var series_type = args[2].toLowerCase();
 
-      runAll(client, message, ticker, time_interval, series_type);
-      
+      indicatorData(client, message, ticker, time_interval, series_type);
+
       // intradayData(client, message, ticker).then(() => {
       //   intradayDisplay(client, message, ticker);
       // });
@@ -56,9 +56,10 @@ const writeFilePromise = (file, data) => {
 function SMA(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
-      .sma(ticker, time_interval, 100, series_type)
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
+      .sma(ticker, time_interval, 50, series_type)
+      .catch(err => {
+        // stockErr.stockNotFound(client, message, ticker);
+        console.log(err);
       })
       .then((data) => {
         writeFilePromise(
@@ -78,9 +79,11 @@ function SMA(client, message, ticker, time_interval, series_type) {
 function EMA(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
-      .ema(ticker, time_interval, 100, series_type)
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
+      .ema(ticker, time_interval, 50, series_type)
+      .catch(err => {
+        // stockErr.stockNotFound(client, message, ticker);
+        console.log(err);
+
       })
       .then((data) => {
         writeFilePromise(
@@ -97,38 +100,18 @@ function EMA(client, message, ticker, time_interval, series_type) {
   });
 }
 
-function WMA(client, message, ticker, time_interval, series_type) {
-  return new Promise((resolve, reject) => {
-    alpha.technical
-      .wma(ticker, time_interval, 100, series_type)
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
-      })
-      .then((data) => {
-        writeFilePromise(
-          `commands/indicator/${ticker}_${time_interval}_WMA.json`,
-          JSON.stringify(data)
-        )
-          .then(() => {
-            resolve();
-          })
-          .catch(() => {
-            reject();
-          });
-      });
-  });
-}
-
 function MACD(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
       .macd(ticker, time_interval, series_type)
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
+      .catch(err => {
+        // stockErr.stockNotFound(client, message, ticker);
+        console.log(err);
+
       })
       .then((data) => {
         writeFilePromise(
-          `commands/indicator/${ticker}_${time_interval}_MACD.json`,
+          `commands/indicator/${ticker}_${time_interval}_${series_type}_MACD.json`,
           JSON.stringify(data)
         )
           .then(() => {
@@ -144,13 +127,15 @@ function MACD(client, message, ticker, time_interval, series_type) {
 function RSI(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
-      .rsi(ticker, time_interval, 100, series_type)
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
+      .rsi(ticker, time_interval, 50, series_type)
+      .catch(err => {
+        // stockErr.stockNotFound(client, message, ticker);
+        console.log(err);
+
       })
       .then((data) => {
         writeFilePromise(
-          `commands/indicator/${ticker}_${time_interval}_RSI.json`,
+          `commands/indicator/${ticker}_${time_interval}_${series_type}_RSI.json`,
           JSON.stringify(data)
         )
           .then(() => {
@@ -163,16 +148,18 @@ function RSI(client, message, ticker, time_interval, series_type) {
   });
 }
 
-function CCI(client, message, ticker, time_interval) {
+function CCI(client, message, ticker, time_interval, series_type) {
   return new Promise((resolve, reject) => {
     alpha.technical
-      .cci(ticker, time_interval, 100)
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
+      .cci(ticker, time_interval, 50)
+      .catch(err => {
+        // stockErr.stockNotFound(client, message, ticker);
+        console.log(err);
+
       })
       .then((data) => {
         writeFilePromise(
-          `commands/indicator/${ticker}_${time_interval}_CCI.json`,
+          `commands/indicator/${ticker}_${time_interval}_${series_type}_CCI.json`,
           JSON.stringify(data)
         )
           .then(() => {
@@ -185,14 +172,35 @@ function CCI(client, message, ticker, time_interval) {
   });
 }
 
-function runAll(client, message, ticker, time_interval, series_type) {
-  SMA(client, message, ticker, time_interval, series_type);
-  EMA(client, message, ticker, time_interval, series_type);
-  WMA(client, message, ticker, time_interval, series_type);
-  MACD(client, message, ticker, time_interval, series_type);
-  RSI(client, message, ticker, time_interval, series_type);
-  CCI(client, message, ticker, time_interval);
+async function indicatorData(client, message, ticker, time_interval, series_type) {
+
+  await SMA(client, message, ticker, time_interval, series_type);
+  await EMA(client, message, ticker, time_interval, series_type);
+  await MACD(client, message, ticker, time_interval, series_type);
+  await RSI(client, message, ticker, time_interval, series_type);
+  await CCI(client, message, ticker, time_interval, series_type);
+
+
+  var options = {
+    pythonOptions: ["-u"],
+    scriptPath: "./commands/indicator/",
+    args: [ticker, time_interval, series_type],
+  };
+
+  var path = "ireport_chart.py";
+
+  return new Promise((resolve, reject) => {
+    python
+      .pythonRun(path, options)
+      .then(() => {
+        resolve();
+      })
+      .catch(() => {
+        reject();
+      });
+  });
 }
+
 
 function intradayData(client, message, ticker) {
   const writeFilePromise = (file, data) => {
