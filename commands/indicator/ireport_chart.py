@@ -44,11 +44,15 @@ if __name__ == "__main__":
             avg = 0
 
             data = []
+
+            # For every data entry
             for timestamp, entry in time_series.items():
+                # Graph Population
                 datetime_object = datetime.strptime(timestamp, '%Y-%m-%d')
                 data.append(
                     [datetime_object, float(entry[f'{indicator}'])])
 
+                # Numerical Value Calculation
                 data_point = round(float(entry[f'{indicator}']), 2)
 
                 if data_point > high:
@@ -74,6 +78,7 @@ if __name__ == "__main__":
             plt.savefig(
                 graph, transparent=True)
 
+            # Context Updating
             context[f'{indicator.lower()}_label'] = data_dict["Meta Data"]["2: Indicator"]
             context[f'{indicator.lower()}_low'] = low
             context[f'{indicator.lower()}_high'] = high
@@ -81,11 +86,10 @@ if __name__ == "__main__":
             context[f'{indicator.lower()}_png'] = InlineImage(
                 doc, graph, graph_size)
 
-    # 'sma_png': png_dict["SMA"], 'ema_png': png_dict["EMA"], 'macd_png': png_dict["MACD"], 'rsi_png': png_dict["RSI"], 'cci_png': png_dict["CCI"]}
-
     doc.render(context)
     doc.save(out_file_docx)
 
+    # Clean Up
     for indicator in ind_dict:
         os.remove(
             f'commands/indicator/{ticker}_{time_interval}_{series_type}_{indicator}.json')
