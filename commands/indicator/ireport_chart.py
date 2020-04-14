@@ -85,3 +85,8 @@ if __name__ == "__main__":
 
     doc.render(context)
     doc.save(out_file_docx)
+
+    for indicator in ind_dict:
+        os.remove(
+            f'commands/indicator/{ticker}_{time_interval}_{series_type}_{indicator}.json')
+        os.remove(f'commands/indicator/{ticker}_{indicator}.png')
