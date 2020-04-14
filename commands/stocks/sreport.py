@@ -107,6 +107,7 @@ if __name__ == "__main__":
         monthly_avg_price /= len(time_series)
         monthly_avg_price = round(monthly_avg_price, 2)
         monthly_change = round(monthly_close - monthly_open, 2)
+        
 
     context = {'ticker': ticker.upper(), 'date': date, 'time': time, 'quote_open': quote_open, 'quote_price1': quote_price, 'quote_high': quote_high, 'quote_low': quote_low,
                'quote_volume': quote_volume, 'quote_last_day': quote_last_day, 'quote_last_close': quote_last_close, 'quote_change': quote_change,
