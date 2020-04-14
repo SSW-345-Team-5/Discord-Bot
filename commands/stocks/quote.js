@@ -16,7 +16,7 @@ module.exports = {
     "Returns quote (A lightweight alternative to the time series APIs, this service returns the latest price and volume information for a security of your choice.)",
   usage: "<ticker>",
   run: async (client, message, args) => {
-    if (args.length < 1) return message.channel.send("Usage: <ticker>");
+    if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 

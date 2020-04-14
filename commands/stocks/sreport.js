@@ -11,15 +11,15 @@ module.exports = {
   name: "sreport",
   aliases: ["srpt"],
   category: "stocks",
-  description: "Returns the aggregate analysis data for a stock",
+  description: "Returns the aggregate analysis data for a stock.",
   usage: "<ticker>",
   run: async (client, message, args) => {
-    if (args.length < 1) return message.channel.send("Usage: <ticker>");
+    if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 
       reportData(client, message, ticker).then(() => {
-        displayReport(client, message, ticker);
+        reportDisplay(client, message, ticker);
       });
     }
   },
@@ -52,9 +52,9 @@ async function reportData(client, message, input) {
   });
 }
 
-function displayReport(client, message, ticker) {
+function reportDisplay(client, message, ticker) {
   const attachment = new MessageAttachment(
-    `./commands/stocks/${ticker}_report.docx`
+    `./commands/stocks/${ticker}_sreport.docx`
   );
 
   return message.channel.send({ files: [attachment] }).then(() => {
@@ -66,7 +66,7 @@ function cleanUp(ticker) {
   const cb = function (err) {
     if (err) console.log(err);
   };
-  fs.unlink(`./commands/stocks/${ticker}_report.docx`, cb);
+  fs.unlink(`./commands/stocks/${ticker}_sreport.docx`, cb);
   intraData.intradayCleanUp(ticker);
   monthData.monthlyCleanUp(ticker);
   quoteData.quoteCleanUp(ticker);

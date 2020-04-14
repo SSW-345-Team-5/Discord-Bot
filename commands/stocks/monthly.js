@@ -14,7 +14,7 @@ module.exports = {
     "Returns monthly time series (last trading day of each month, monthly open, monthly high, monthly low, monthly close, monthly volume) of the global equity specified, covering 20+ years of historical data.",
   usage: "<ticker>",
   run: async (client, message, args) => {
-    if (args.length < 1) return message.channel.send("Usage: <ticker>");
+    if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 

@@ -11,10 +11,10 @@ module.exports = {
   aliases: ["in"],
   category: "stocks",
   description:
-    "Rreturns intraday time series (timestamp, open, high, low, close, volume) of the equity specified.",
+    "Returns intraday time series (timestamp, open, high, low, close, volume) of the equity specified.",
   usage: "<ticker>",
   run: async (client, message, args) => {
-    if (args.length < 1) return message.channel.send("Usage: <ticker>");
+    if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
 
