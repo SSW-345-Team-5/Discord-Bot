@@ -11,7 +11,7 @@ var returnedData;
 module.exports = {
   name: "exrate",
   aliases: ["exr"],
-  category: "Currency",
+  category: "currency",
   description:
     "Returns the realtime exchange rate for any pair of digital currency (e.g., Bitcoin) and physical currency (e.g., USD)",
   usage: "<from_currency> <to_currency>",
