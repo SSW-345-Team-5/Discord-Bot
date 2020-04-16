@@ -9,9 +9,9 @@ const alpha = require("alphavantage")({ key: key });
 module.exports = {
   name: "exdaily",
   aliases: ["exd"],
-  category: "currency",
+  category: "Currency",
   description:
-    "Rturns the daily historical time series for a digital currency (e.g., BTC) traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted in both the market-specific currency and USD.",
+    "Returns the daily historical time series for a digital currency (e.g., BTC) traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted in both the market-specific currency and USD.",
   usage: "<currency> <market>",
   parameters: {
     "-market": "market on which the currency is traded (e.g., CNY/Chinese Yuan",
