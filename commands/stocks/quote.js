@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const fs = require("fs");
 
 const stockErr = require("../../stockNotFound.js");
@@ -50,7 +50,10 @@ function quoteData(client, message, ticker) {
         stockErr.stockNotFound(client, message, ticker);
       })
       .then((data) => {
-        writeFilePromise(`commands/stocks/${ticker}_quote.json`, JSON.stringify(data))
+        writeFilePromise(
+          `commands/stocks/${ticker}_quote.json`,
+          JSON.stringify(data)
+        )
           .then(() => {
             returnedData = JSON.stringify(data);
             resolve();
