@@ -3,7 +3,7 @@ const { Client, Collection } = require("discord.js");
 const fs = require("fs");
 
 const client = new Client({
-  disableEveryone: true
+  disableEveryone: true,
 });
 
 client.commands = new Collection();
@@ -11,17 +11,16 @@ client.aliases = new Collection();
 
 client.categories = fs.readdirSync("./commands/");
 
-
-["command"].forEach(handler => {
+["command"].forEach((handler) => {
   require(`./handler/${handler}`)(client);
 });
 
 client.on("ready", async () => {
   console.log(`${client.user.username} is online!`);
-  client.user.setActivity('t.help', {type: 'STREAMING'});
+  client.user.setActivity("t.help", { type: "STREAMING" });
 });
 
-client.on("message", async message => {
+client.on("message", async (message) => {
   if (
     message.author.bot ||
     !message.guild ||
@@ -36,7 +35,7 @@ client.on("message", async message => {
     .slice(botconfig.prefix.length)
     .trim()
     .split(/ +/g);
-    
+
   const cmd = args.shift().toLowerCase();
 
   if (cmd.length === 0) return;
@@ -44,7 +43,8 @@ client.on("message", async message => {
   let command = client.commands.get(cmd);
   if (!command) command = client.commands.get(client.aliases.get(cmd));
 
-  if (command) command.run(client, message, args);
+  if (command) command.run(client, message, args, message.author);
 });
 
 client.login(botconfig.token);
+
