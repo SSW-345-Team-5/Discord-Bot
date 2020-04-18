@@ -15,7 +15,7 @@ module.exports = {
   description:
     "Returns the realtime exchange rate for any pair of digital currency (e.g., Bitcoin) and physical currency (e.g., USD)",
   usage: "<from_currency> <to_currency>",
-  run: async (client, message, args) => {
+  run: async (client, message, args, author) => {
     if (args.length != 2)
       return message.channel.send("Usage: <from_currency> <to_currency>");
     else {

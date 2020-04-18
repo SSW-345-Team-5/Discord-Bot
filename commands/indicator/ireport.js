@@ -18,7 +18,7 @@ module.exports = {
       "time interval between data points (1/5/15/30/60min, daily, weekly monthly)",
     "-series_type": "desired price (close/open/high/low)",
   },
-  run: async (client, message, args) => {
+  run: async (client, message, args, author) => {
     if (args.length != 3)
       return message.channel.send(
         "Usage: <ticker> <time_interval> <series_type>"

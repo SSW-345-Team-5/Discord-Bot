@@ -13,7 +13,7 @@ module.exports = {
   description:
     "Returns intraday time series (timestamp, open, high, low, close, volume) of the equity specified.",
   usage: "<ticker>",
-  run: async (client, message, args) => {
+  run: async (client, message, args, author) => {
     if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
@@ -27,7 +27,6 @@ module.exports = {
     return intradayData(client, message, ticker);
   },
   intradayCleanUp: (ticker) => {
-    const output_png = `commands/stocks/${ticker}_intraday.png`;
     return intradayCleanUp(ticker);
   },
 };

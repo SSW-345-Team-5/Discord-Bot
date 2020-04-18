@@ -7,7 +7,7 @@ module.exports = {
   category: "info",
   description: "Returns a list of commands, or one specific command's info",
   usage: "[command | alias]",
-  run: async (client, message, args) => {
+  run: async (client, message, args, author) => {
     // If there's an args found
     // Send the info of that command found
     // If no info found, return not found embed.

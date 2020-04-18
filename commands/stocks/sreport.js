@@ -13,7 +13,7 @@ module.exports = {
   category: "stocks",
   description: "Returns the aggregate analysis data for a stock.",
   usage: "<ticker>",
-  run: async (client, message, args) => {
+  run: async (client, message, args, author) => {
     if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();

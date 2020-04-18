@@ -16,7 +16,7 @@ module.exports = {
   parameters: {
     "-market": "market on which the currency is traded (e.g., CNY/Chinese Yuan",
   },
-  run: async (client, message, args) => {
+  run: async (client, message, args, author) => {
     if (args.length != 2)
       return message.channel.send("Usage: <currency> <market>");
     else {

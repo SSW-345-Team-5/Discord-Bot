@@ -66,7 +66,7 @@ function monthlyData(client, message, ticker) {
   });
 }
 
-function monthlyDisplay(client, message, ticker) {
+function monthlyDisplay(client, message, ticker, author) {
   const embed = new MessageEmbed();
 
   const attachment = new MessageAttachment(`commands/stocks/${ticker}_monthly.png`);
