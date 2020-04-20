@@ -46,8 +46,8 @@ function quoteData(client, message, ticker) {
   return new Promise((resolve, reject) => {
     alpha.data
       .quote(ticker)
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
+      .catch((err) => {
+        console.log(err);
       })
       .then((data) => {
         writeFilePromise(

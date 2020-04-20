@@ -1,9 +1,16 @@
 const botconfig = require("./botconfig.json");
 const { Client, Collection } = require("discord.js");
 const fs = require("fs");
+const serviceAccount = require("./serviceAccount.json");
+
+const admin = require('firebase-admin');
 
 const client = new Client({
   disableEveryone: true,
+});
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
 });
 
 client.commands = new Collection();
@@ -47,4 +54,3 @@ client.on("message", async (message) => {
 });
 
 client.login(botconfig.token);
-

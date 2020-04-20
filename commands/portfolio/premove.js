@@ -4,31 +4,31 @@ const admin = require("firebase-admin");
 const serviceAccount = require("../../serviceAccount.json");
 
 module.exports = {
-  name: "padd",
-  aliases: ["pa"],
+  name: "premove",
+  aliases: ["prm"],
   category: "portfolio",
-  description: "Adds a stock to the user's portfolio.",
+  description: "Removes a stock from the user's portfolio.",
   usage: "<ticker>",
   run: async (client, message, args, author) => {
     if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
-      padd(client, message, ticker, author);
+      premove(client, message, ticker, author);
     }
   },
 };
 
-function padd(client, message, ticker, author) {
+function premove(client, message, ticker, author) {
   let db = admin.firestore().collection("user_portfolios").doc(author.id);
 
   db.set(
     {
-      tickers: admin.firestore.FieldValue.arrayUnion(ticker),
+      tickers: admin.firestore.FieldValue.arrayRemove(ticker),
     },
     { merge: true }
   );
 
   message.channel.send(
-    `<@${author.id}> added ${ticker.toUpperCase()} to their portfolio.`
+    `<@${author.id}> removed ${ticker.toUpperCase()} from their portfolio.`
   );
 }
