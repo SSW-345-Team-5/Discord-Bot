@@ -13,7 +13,6 @@ module.exports = {
     if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
-      console.log(author);
       padd(client, message, ticker, author);
     }
   },
