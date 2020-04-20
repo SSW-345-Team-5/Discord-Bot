@@ -1,10 +1,7 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const fs = require("fs");
-const python = require("../../pythonRun.js");
-const stockErr = require("../../stockNotFound.js");
 const botconfig = require("../../botconfig.json");
-const key = botconfig.alphavantage_key;
-const alpha = require("alphavantage")({ key: key });
+const admin = require("firebase-admin");
+const serviceAccount = require("../../serviceAccount.json");
 
 module.exports = {
   name: "padd",
@@ -16,8 +13,23 @@ module.exports = {
     if (args.length != 1) return message.channel.send("Usage: <ticker>");
     else {
       var ticker = args[0].toLowerCase();
-
       console.log(author);
+      padd(client, message, ticker, author);
     }
   },
 };
+
+function padd(client, message, ticker, author) {
+  let db = admin.firestore().collection("user_portfolios").doc(author.id);
+
+  db.set(
+    {
+      tickers: admin.firestore.FieldValue.arrayUnion(ticker),
+    },
+    { merge: true }
+  );
+
+  message.channel.send(
+    `<@${author.id}> added ${ticker.toUpperCase()} to their portfolio.`
+  );
+}
