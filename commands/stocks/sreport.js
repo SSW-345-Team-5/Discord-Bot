@@ -23,6 +23,15 @@ module.exports = {
       });
     }
   },
+  reportData: (client, message, input) => {
+    return reportData(client, message, input);
+  },
+  reportDisplay: (client, message, input) => {
+    return reportData(client, message, input);
+  },
+  cleanUp: (ticker) => {
+    return cleanUp(ticker);
+  },
 };
 
 async function reportData(client, message, input) {
