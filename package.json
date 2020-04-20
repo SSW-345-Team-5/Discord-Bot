@@ -30,6 +30,8 @@
     "docxtemplater": "^3.17.2",
     "docxtemplater-image-module": "^3.1.0",
     "execSync": "^1.0.2",
+    "firebase": "^7.14.1",
+    "firebase-admin": "^8.10.0",
     "pizzip": "^3.0.6",
     "python-shell": "^1.0.8",
     "sync": "^0.2.5",
