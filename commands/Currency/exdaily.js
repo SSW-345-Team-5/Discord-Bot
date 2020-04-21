@@ -13,7 +13,7 @@ module.exports = {
   aliases: ["exd"],
   category: "currency",
   description:
-    "Returns the daily historical time series for a digital currency (e.g., BTC) traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted in both the market-specific currency and USD.",
+    "Returns the daily historical time series for a digital currency (e.g., BTC) traded on a specific market (e.g., CNY), refreshed daily at midnight (UTC). Prices and volumes are quoted in both the market-specific currency and USD.",
   usage: "t.exdaily <currency> <market>",
   parameters: {
     "-market":
