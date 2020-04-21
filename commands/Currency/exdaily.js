@@ -17,7 +17,7 @@ module.exports = {
   usage: "t.exdaily <currency> <market>",
   parameters: {
     "-market":
-      "market on which the currency is traded (e.g., CNY/Chinese Yuan)",
+      "market on which the currency is traded (e.g., CNY)",
   },
   run: async (client, message, args, author) => {
     if (args.length != 2)
