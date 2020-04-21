@@ -1,19 +1,18 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
-const botconfig = require("../../botconfig.json");
-const admin = require("firebase-admin");
-const serviceAccount = require("../../serviceAccount.json");
+const { admin } = require("../../shared/shared.js");
 
 module.exports = {
   name: "padd",
   aliases: ["pa"],
   category: "portfolio",
   description: "Adds a stock to the user's portfolio.",
-  usage: "<ticker>",
+  usage: "t.padd <ticker>",
   run: async (client, message, args, author) => {
-    if (args.length != 1) return message.channel.send("Usage: <ticker>");
+    if (args.length != 1) return message.channel.send(`Usage: ${ticker}`);
     else {
       var ticker = args[0].toLowerCase();
-      padd(client, message, ticker, author);
+      padd(client, message, ticker, author).catch((err) => {
+        return message.channel.send(err);
+      });
     }
   },
 };
@@ -28,7 +27,7 @@ function padd(client, message, ticker, author) {
     { merge: true }
   );
 
-  message.channel.send(
+  return message.channel.send(
     `<@${author.id}> added ${ticker.toUpperCase()} to their portfolio.`
   );
 }
