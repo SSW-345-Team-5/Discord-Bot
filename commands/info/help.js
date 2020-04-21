@@ -68,5 +68,5 @@ function getCMD(client, message, input) {
     }
   }
 
-  return message.channel.send(embed.setColor("GREEN").setDescription(info));
+  return message.channel.send(embed.setDescription(info));
 }
