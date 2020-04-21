@@ -1,10 +1,11 @@
 const {
-  MessageEmbed,
   MessageAttachment,
+  embedSend,
   writeFilePromise,
   pythonRun,
   alpha,
   fs,
+  styles
 } = require("../../shared/shared.js");
 
 module.exports = {
@@ -15,7 +16,8 @@ module.exports = {
     "Returns the daily historical time series for a digital currency (e.g., BTC) traded on a specific market (e.g., CNY/Chinese Yuan), refreshed daily at midnight (UTC). Prices and volumes are quoted in both the market-specific currency and USD.",
   usage: "t.exdaily <currency> <market>",
   parameters: {
-    "-market": "market on which the currency is traded (e.g., CNY/Chinese Yuan)",
+    "-market":
+      "market on which the currency is traded (e.g., CNY/Chinese Yuan)",
   },
   run: async (client, message, args, author) => {
     if (args.length != 2)
@@ -26,15 +28,19 @@ module.exports = {
 
       exdailyData(client, message, currency, market)
         .then(() => {
-          exdailyDisplay(client, message, currency, market);
+          exdailyDisplay(client, message, currency, market, author);
         })
         .catch((err) => {
-          return message.channel.send(JSON.parse(err.split("An AlphaVantage error occurred. ")[1])["Error Message"]);
+          return message.channel.send(
+            JSON.parse(err.split("An AlphaVantage error occurred. ")[1])[
+              "Error Message"
+            ]
+          );
         });
     }
   },
   exdailyData: (client, message, currency, market) => {
-    return exrateData(client, message, currency, market);
+    return exdailyData(client, message, currency, market);
   },
 };
 
@@ -68,18 +74,18 @@ function exdailyData(client, message, currency, market) {
   });
 }
 
-function exdailyDisplay(client, message, currency, market) {
-  const embed = new MessageEmbed();
+function exdailyDisplay(client, message, currency, market, author) {
+  const style = styles[module.exports.category];
+  const embed = embedSend(style["embed_color"]);
 
   const attachment = new MessageAttachment(
     `commands/currency/${currency}_${market}.png`
   );
 
   embed.image = { url: `attachment://${currency}_${market}.png` };
-  embed.setColor("BLUE");
 
   return message.channel
-    .send({ files: [attachment], embed: embed })
+    .send(`<@${author.id}>, ${style["embed_msg"]}.`,{ files: [attachment], embed: embed })
     .then(() => {
       exdailyCleanUp(currency, market);
     });
