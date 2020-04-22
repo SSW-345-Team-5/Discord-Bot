@@ -7,7 +7,7 @@ module.exports = {
   description: "Adds a stock to the user's portfolio.",
   usage: "t.padd <ticker>",
   run: async (client, message, args, author) => {
-    if (args.length != 1) return message.channel.send(`Usage: ${ticker}`);
+    if (args.length != 1) return message.channel.send(`Usage: ${modules.exports.usage}`);
     else {
       var ticker = args[0].toLowerCase();
       padd(client, message, ticker, author).catch((err) => {
