@@ -1,5 +1,4 @@
 const {
-  MessageEmbed,
   embedSend,
   writeFilePromise,
   alpha,
