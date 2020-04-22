@@ -11,9 +11,7 @@ module.exports = {
       return message.channel.send(`Usage: ${modules.exports.usage}`);
     else {
       var ticker = args[0].toLowerCase();
-      premove(client, message, ticker, author).catch((err) => {
-        return message.channel.send(err);
-      });
+      premove(client, message, ticker, author);
     }
   },
 };
