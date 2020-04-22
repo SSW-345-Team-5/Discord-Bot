@@ -5,7 +5,7 @@ const {
   pythonRun,
   alpha,
   fs,
-  styles
+  styles,
 } = require("../../shared/shared.js");
 
 module.exports = {
