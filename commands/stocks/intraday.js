@@ -1,5 +1,4 @@
 const {
-  MessageEmbed,
   MessageAttachment,
   embedSend,
   writeFilePromise,
