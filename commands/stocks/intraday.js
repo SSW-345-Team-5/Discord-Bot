@@ -1,26 +1,38 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
-const fs = require("fs");
-const python = require("../../pythonRun.js");
-const stockErr = require("../../stockNotFound.js");
-const botconfig = require("../../botconfig.json");
-const key = botconfig.alphavantage_key;
-const alpha = require("alphavantage")({ key: key });
+const {
+  MessageEmbed,
+  MessageAttachment,
+  embedSend,
+  writeFilePromise,
+  pythonRun,
+  alpha,
+  fs,
+  styles,
+} = require("../../shared/shared.js");
 
 module.exports = {
   name: "intraday",
   aliases: ["in"],
   category: "stocks",
   description:
-    "Returns intraday time series (timestamp, open, high, low, close, volume) of the equity specified.",
-  usage: "<ticker>",
+    "Returns the intraday time series (timestamp, open, high, low, close, volume) of the equity specified.",
+  usage: "t.intraday <ticker>",
   run: async (client, message, args, author) => {
-    if (args.length != 1) return message.channel.send("Usage: <ticker>");
+    if (args.length != 1)
+      return message.channel.send(`Usage: ${module.exports.usage}`);
     else {
       var ticker = args[0].toLowerCase();
 
-      intradayData(client, message, ticker).then(() => {
-        intradayDisplay(client, message, ticker);
-      });
+      intradayData(client, message, ticker)
+        .then(() => {
+          intradayDisplay(client, message, ticker, author);
+        })
+        .catch((err) => {
+          return message.channel.send(
+            JSON.parse(err.split("An AlphaVantage error occurred. ")[1])[
+              "Error Message"
+            ]
+          );
+        });
     }
   },
   intradayData: (client, message, ticker) => {
@@ -32,50 +44,48 @@ module.exports = {
 };
 
 function intradayData(client, message, ticker) {
-  const writeFilePromise = (file, data) => {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(file, data, (error) => {
-        if (error) reject(error);
-        resolve();
-      });
-    });
-  };
-
   var options = {
     pythonOptions: ["-u"],
     scriptPath: "./commands/stocks/",
     args: ticker,
   };
 
-  const path = "intraday_chart.py";
+  const path = "intraday.py";
 
   return new Promise((resolve, reject) => {
     alpha.data
       .intraday(ticker, "15min")
-      .catch(() => {
-        stockErr.stockNotFound(client, message, ticker);
-      })
       .then((data) => {
-        writeFilePromise(`commands/stocks/${ticker}_intraday.json`, JSON.stringify(data)).then(() => {
-          python
-            .pythonRun(path, options)
-            .then(() => resolve())
-            .catch(() => reject());
+        writeFilePromise(
+          `commands/stocks/${ticker}_intraday.json`,
+          JSON.stringify(data)
+        ).then(() => {
+          pythonRun(path, options)
+            .then(() => {resolve()})
+            .catch(() => {reject()});
         });
+      })
+      .catch((err) => {
+        reject(err);
       });
   });
 }
 
-function intradayDisplay(client, message, ticker) {
-  const embed = new MessageEmbed();
+function intradayDisplay(client, message, ticker, author) {
+  const style = styles[module.exports.category];
+  const embed = embedSend(style["embed_color"]);
 
-  const attachment = new MessageAttachment(`commands/stocks/${ticker}_intraday.png`);
+  const attachment = new MessageAttachment(
+    `commands/stocks/${ticker}_intraday.png`
+  );
 
   embed.image = { url: `attachment://${ticker}_intraday.png` };
-  embed.setColor("BLUE");
 
   return message.channel
-    .send({ files: [attachment], embed: embed })
+    .send(`<@${author.id}>, ${style["embed_msg"]}.`, {
+      files: [attachment],
+      embed: embed,
+    })
     .then(() => {
       intradayCleanUp(ticker);
     });
