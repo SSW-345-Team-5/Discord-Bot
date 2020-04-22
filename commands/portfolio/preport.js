@@ -1,9 +1,4 @@
-const {
-  MessageAttachment,
-  embedSend,
-  admin,
-  styles,
-} = require("../../shared/shared.js");
+const { admin } = require("../../shared/shared.js");
 
 const { reportData, reportDisplay, cleanUp } = require("../stocks/sreport.js");
 
