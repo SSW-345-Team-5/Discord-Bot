@@ -14,27 +14,15 @@
   "author": "liam",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/SSW-345-Team-5/Discord-Bot/issues"
+    "url": "https://github.com/SSW-345-Team-5/Discord-Bnot/issues"
   },
   "homepage": "https://github.com/SSW-345-Team-5/Discord-Bot#readme",
   "dependencies": {
     "alphavantage": "^2.0.1",
     "ascii-table": "0.0.9",
     "common-tags": "^1.8.0",
-    "d3": "^5.15.0",
-    "d3-node": "^2.2.1",
-    "d3-time-format": "^2.2.3",
-    "d3node-linechart": "^0.1.2",
-    "discord.js": "^12.0.2",
-    "docx-templates": "^3.1.1",
-    "docxtemplater": "^3.17.2",
-    "docxtemplater-image-module": "^3.1.0",
-    "execSync": "^1.0.2",
-    "firebase": "^7.14.1",
+    "discord.js": "^12.2.0",
     "firebase-admin": "^8.10.0",
-    "pizzip": "^3.0.6",
-    "python-shell": "^1.0.8",
-    "sync": "^0.2.5",
-    "sync-exec": "^0.6.2"
+    "python-shell": "^1.0.8"
   }
 }
