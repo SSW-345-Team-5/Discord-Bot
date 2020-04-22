@@ -60,8 +60,12 @@ function intradayData(client, message, ticker) {
           JSON.stringify(data)
         ).then(() => {
           pythonRun(path, options)
-            .then(() => {resolve()})
-            .catch(() => {reject()});
+            .then(() => {
+              resolve();
+            })
+            .catch(() => {
+              reject();
+            });
         });
       })
       .catch((err) => {
