@@ -2,7 +2,7 @@ const {
   MessageAttachment,
   pythonRun,
   fs,
-  styles
+  styles,
 } = require("../../shared/shared.js");
 
 const quoteData = require("./quote.js");
@@ -37,8 +37,8 @@ module.exports = {
   reportData: (client, message, input) => {
     return reportData(client, message, input);
   },
-  reportDisplay: (client, message, input) => {
-    return reportData(client, message, input);
+  reportDisplay: (client, message, input, author) => {
+    return reportDisplay(client, message, input, author);
   },
   cleanUp: (ticker) => {
     return cleanUp(ticker);
