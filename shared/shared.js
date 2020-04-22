@@ -7,6 +7,7 @@ const alpha = require("alphavantage")({
 });
 const fs = require("fs");
 const admin = require("firebase-admin");
+const styles = require("./styles.json")["commands"];
 
 module.exports = {
   MessageEmbed,
@@ -17,4 +18,5 @@ module.exports = {
   alpha,
   fs,
   admin,
+  styles
 };
