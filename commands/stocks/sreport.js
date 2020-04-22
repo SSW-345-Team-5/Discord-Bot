@@ -1,26 +1,37 @@
-const { MessageAttachment } = require("discord.js");
-const fs = require("fs");
+const {
+  MessageAttachment,
+  pythonRun,
+  fs,
+  styles
+} = require("../../shared/shared.js");
 
 const quoteData = require("./quote.js");
 const intraData = require("./intraday.js");
 const monthData = require("./monthly.js");
-
-const python = require("../../pythonRun.js");
 
 module.exports = {
   name: "sreport",
   aliases: ["srpt"],
   category: "stocks",
   description: "Returns the aggregate analysis data for a stock.",
-  usage: "<ticker>",
+  usage: "t.sreport <ticker>",
   run: async (client, message, args, author) => {
-    if (args.length != 1) return message.channel.send("Usage: <ticker>");
+    if (args.length != 1)
+      return message.channel.send(`Usage: ${module.exports.usage}`);
     else {
       var ticker = args[0].toLowerCase();
 
-      reportData(client, message, ticker).then(() => {
-        reportDisplay(client, message, ticker);
-      });
+      reportData(client, message, ticker)
+        .then(() => {
+          reportDisplay(client, message, ticker, author);
+        })
+        .catch((err) => {
+          return message.channel.send(
+            JSON.parse(err.split("An AlphaVantage error occurred. ")[1])[
+              "Error Message"
+            ]
+          );
+        });
     }
   },
   reportData: (client, message, input) => {
@@ -50,8 +61,7 @@ async function reportData(client, message, input) {
   await quoteData.quoteData(client, message, ticker);
 
   return new Promise((resolve, reject) => {
-    python
-      .pythonRun(path, options)
+    pythonRun(path, options)
       .then(() => {
         resolve();
       })
@@ -61,14 +71,18 @@ async function reportData(client, message, input) {
   });
 }
 
-function reportDisplay(client, message, ticker) {
+function reportDisplay(client, message, ticker, author) {
+  const style = styles[module.exports.category];
+
   const attachment = new MessageAttachment(
     `./commands/stocks/${ticker}_sreport.docx`
   );
 
-  return message.channel.send({ files: [attachment] }).then(() => {
-    cleanUp(ticker);
-  });
+  return message.channel
+    .send(`<@${author.id}>, ${style["embed_msg"]}.`, { files: [attachment] })
+    .then(() => {
+      cleanUp(ticker);
+    });
 }
 
 function cleanUp(ticker) {
