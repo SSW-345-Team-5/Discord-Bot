@@ -1,0 +1,22 @@
+{
+    "commands": {
+        "currency": {
+            "embed_color": "BLUE",
+            "embed_msg": "here's your currency report"
+        },
+        "indicator": {
+            "embed_color": "PURPLE",
+            "embed_msg": "here's your indicator report"
+        },
+        "info": {
+            "embed_color": "YELLOW"
+        },
+        "portfolio": {
+            "embed_color": "ORANGE"
+        },
+        "stocks": {
+            "embed_color": "GREEN",
+            "embed_msg": "here's your stock report"
+        }
+    }
+}

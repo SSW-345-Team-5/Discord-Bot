@@ -13,23 +13,12 @@ plt.rcParams.update(params)
 
 if __name__ == '__main__':
 
-    '''
-    Formating:
-    <ticker> [close | open | high | low]
-    '''
-    # arg_dict = {
-    #     'open': '1. open',
-    #     'high': '2. high',
-    #     'low': '3. low',
-    #     'close': '4. close',
-    # }
-
     if len(sys.argv) != 2:
         sys.exit(1)
 
-    # plot_list = [arg_dict[arg] for arg in sys.argv[2:]]
 
     ticker = sys.argv[1]
+
     with open(f'commands/stocks/{ticker}_intraday.json', mode='r') as data_file:
         data_dict = json.load(data_file)
         interval = data_dict["Meta Data"]["4. Interval"]
@@ -37,15 +26,9 @@ if __name__ == '__main__':
 
         data = []
         for k, v in time_series.items():
-            # determine what data we need to plot
             datetime_object = datetime.strptime(k, '%Y-%m-%d %H:%M:%S')
-            # row = [datetime_object]
-            # for p in plot_list:
-            #     row.append(float(v[p]))
-            # data.append(row)
             data.append([datetime_object, float(v['4. close'])])
 
-        # cols = ['time'].extend(plot)
         df = pd.DataFrame(data, columns=['time', 'close'])
         df.set_index('time')
 
