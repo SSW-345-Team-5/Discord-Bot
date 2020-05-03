@@ -2,7 +2,6 @@ import sys
 import os
 import docx
 import json
-import pdfkit
 from docxtpl import DocxTemplate, InlineImage
 from datetime import datetime
 
