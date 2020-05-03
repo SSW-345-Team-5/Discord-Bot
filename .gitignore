@@ -4,3 +4,4 @@ botconfig.json
 package-lock.json
 serviceAccount.json
 node_modules
+env
