@@ -1,36 +1,39 @@
-const { MessageEmbed } = require("discord.js");
-const fs = require("fs");
-
-const stockErr = require("../../stockNotFound.js");
-const botconfig = require("../../botconfig.json");
-const key = botconfig.alphavantage_key;
-const alpha = require("alphavantage")({ key: key });
+const { embedSend, alpha, styles } = require("../../shared/shared.js");
 
 var returnedData;
 
 module.exports = {
   name: "exrate",
   aliases: ["exr"],
-  category: "Currency",
+  category: "currency",
   description:
-    "Returns the realtime exchange rate for any pair of digital currency (e.g., Bitcoin) and physical currency (e.g., USD)",
-  usage: "<from_currency> <to_currency>",
+    "Returns the realtime exchange rate for any pair of digital currency (e.g., BTC) and physical currency (e.g., USD)",
+  usage: "t.exrate <from_currency> <to_currency>",
   run: async (client, message, args, author) => {
     if (args.length != 2)
-      return message.channel.send("Usage: <from_currency> <to_currency>");
+      return message.channel.send(`Usage: ${module.exports.usage}`);
     else {
       var from_currency = args[0].toUpperCase();
       var to_currency = args[1].toUpperCase();
 
-      exrateData(client, message, from_currency, to_currency).then(() => {
-        exrateDisplay(
-          client,
-          message,
-          from_currency,
-          to_currency,
-          returnedData
-        );
-      });
+      exrateData(client, message, from_currency, to_currency)
+        .then(() => {
+          exrateDisplay(
+            client,
+            message,
+            from_currency,
+            to_currency,
+            returnedData,
+            author
+          );
+        })
+        .catch((err) => {
+          return message.channel.send(
+            JSON.parse(err.split("An AlphaVantage error occurred. ")[1])[
+              "Error Message"
+            ]
+          );
+        });
     }
   },
   exrateData: (client, message, from_currency, to_currency) => {
@@ -42,25 +45,28 @@ function exrateData(client, message, from_currency, to_currency) {
   return new Promise((resolve, reject) => {
     alpha.forex
       .rate(from_currency, to_currency)
-      .catch(() => {
-        // stockErr.stockNotFound(client, message);
-      })
       .then((data) => {
         returnedData = JSON.stringify(data);
         resolve();
       })
-
-      .catch(() => {
-        reject();
+      .catch((err) => {
+        reject(err);
       });
   });
 }
 
-function exrateDisplay(client, message, from_currency, to_currency, data) {
-  const embed = new MessageEmbed();
-  var obj = JSON.parse(data)["Realtime Currency Exchange Rate"];
+function exrateDisplay(
+  client,
+  message,
+  from_currency,
+  to_currency,
+  data,
+  author
+) {
+  const style = styles[module.exports.category];
+  const embed = embedSend(style["embed_color"]);
 
-  embed.setColor("GREEN");
+  var obj = JSON.parse(data)["Realtime Currency Exchange Rate"];
 
   embed.setAuthor(`${from_currency} to ${to_currency}`);
 
@@ -70,5 +76,7 @@ function exrateDisplay(client, message, from_currency, to_currency, data) {
     }
   }
 
-  return message.channel.send({ embed: embed });
+  return message.channel.send(`<@${author.id}>, ${style["embed_msg"]}.`, {
+    embed: embed,
+  });
 }

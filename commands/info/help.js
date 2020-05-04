@@ -1,31 +1,26 @@
-const { MessageEmbed } = require("discord.js");
+const { embedSend, styles } = require("../../shared/shared.js");
 const { stripIndents } = require("common-tags");
 
 module.exports = {
   name: "help",
   aliases: ["h"],
   category: "info",
-  description: "Returns a list of commands, or one specific command's info",
-  usage: "[command | alias]",
+  description: "Returns a list of commands, or one specific command's info.",
+  usage: "t.help [cmd]",
   run: async (client, message, args, author) => {
-    // If there's an args found
-    // Send the info of that command found
-    // If no info found, return not found embed.
     if (args[0]) {
       return getCMD(client, message, args[0]);
     } else {
-      // Otherwise send all the commands available
-      // Without the cmd info
       return getAll(client, message);
     }
   },
 };
 
-function getAll(client, message) {
-  const embed = new MessageEmbed().setColor("GREEN");
+const style = styles[module.exports.category];
 
-  // Map all the commands
-  // with the specific category
+function getAll(client, message) {
+  const embed = embedSend(style["embed_color"]);
+
   const commands = (category) => {
     return client.commands
       .filter((cmd) => cmd.category === category)
@@ -33,7 +28,6 @@ function getAll(client, message) {
       .join("\n");
   };
 
-  // Map all the categories
   const info = client.categories
     .map(
       (cat) =>
@@ -47,21 +41,18 @@ function getAll(client, message) {
 }
 
 function getCMD(client, message, input) {
-  const embed = new MessageEmbed();
+  const embed = embedSend(style["embed_color"]);
 
-  // Get the cmd by the name or alias
   const cmd =
     client.commands.get(input.toLowerCase()) ||
     client.commands.get(client.aliases.get(input.toLowerCase()));
 
   let info = `No information found for command **${input.toLowerCase()}**`;
 
-  // If no cmd is found, send not found embed
   if (!cmd) {
     return message.channel.send(embed.setColor("RED").setDescription(info));
   }
 
-  // Add all cmd info to the embed
   if (cmd.name) info = `**Command name**: ${cmd.name}`;
   if (cmd.aliases)
     info += `\n**Aliases**: ${cmd.aliases.map((a) => `\`${a}\``).join(", ")}`;
@@ -77,5 +68,5 @@ function getCMD(client, message, input) {
     }
   }
 
-  return message.channel.send(embed.setColor("GREEN").setDescription(info));
+  return message.channel.send(embed.setDescription(info));
 }

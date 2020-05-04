@@ -2,7 +2,6 @@ import sys
 import os
 import docx
 import json
-import pdfkit
 from docxtpl import DocxTemplate, InlineImage
 from datetime import datetime
 
@@ -12,7 +11,7 @@ if __name__ == "__main__":
     ticker = sys.argv[1]
 
     # File paths
-    in_file = "commands/stocks/report.docx"
+    in_file = "commands/stocks/sreport.docx"
     out_file_docx = f"commands/stocks/{ticker}_sreport.docx"
 
     doc = DocxTemplate(in_file)
@@ -120,17 +119,3 @@ if __name__ == "__main__":
     doc.render(context)
     doc.save(out_file_docx)
 
-
-"""
-"Global Quote": {
-        "01. symbol": "IBM",
-        "02. open": "120.4800",
-        "03. high": "122.9200",
-        "04. low": "120.1672",
-        "05. price": "121.5000",
-        "06. volume": "5538597",
-        "07. latest trading day": "2020-04-09",
-        "08. previous close": "119.2900",
-        "09. change": "2.2100",
-        "10. change percent": "1.8526%"
-"""

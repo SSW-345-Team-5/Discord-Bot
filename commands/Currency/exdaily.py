@@ -5,26 +5,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-params = {"ytick.color": "b",
-          "xtick.color": "b",
-          "axes.labelcolor": "b",
-          "axes.edgecolor": "b",
-          "axes.titlecolor": "w"}
+params = {"ytick.color": "#4687d2",
+          "xtick.color": "#4687d2",
+          "axes.labelcolor": "#90b8e4",
+          "axes.edgecolor": "#90b8e4",
+          "axes.titlecolor": "#90b8e4"}
 plt.rcParams.update(params)
 
 if __name__ == '__main__':
-
-    '''
-    Formating:
-    <currency> [close | open | high | low]
-    '''
-    # arg_dict = {
-    #     'open': '1. open',
-    #     'high': '2. high',
-    #     'low': '3. low',
-    #     'close': '4. close',
-    # 
-    # plot_list = [arg_dict[arg] for arg in sys.argv[2:]]
 
     currency = sys.argv[1]
     market = sys.argv[2]
@@ -35,16 +23,11 @@ if __name__ == '__main__':
 
         data = []
         for k, v in time_series.items():
-            # determine what data we need to plot
             datetime_object = datetime.strptime(k, '%Y-%m-%d')
-            # row = [datetime_object]
-            # for p in plot_list:
-            #     row.append(float(v[p]))
-            # data.append(row)
+
             data.append([datetime_object, float(
                 v[f'4a. close ({market})']), float(v['4b. close (USD)'])])
 
-        # cols = ['time'].extend(plot)
         df = pd.DataFrame(
             data, columns=['time', f'close ({market})', 'close (USD)'])
         df.set_index('time')
@@ -56,4 +39,4 @@ if __name__ == '__main__':
         ax.set_ylabel("Close")
 
         plt.savefig(
-            f'commands/currency/{currency}_{market}.png', transparent=True)
+            f'commands/currency/{currency}_{market}.png', transparent=True, bbox_inches='tight')
