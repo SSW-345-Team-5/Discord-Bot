@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  bot:
+    container_name: discord
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
