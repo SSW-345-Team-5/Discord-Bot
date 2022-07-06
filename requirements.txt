@@ -3,7 +3,7 @@ docx==0.2.4
 docxtpl==0.9.2
 Jinja2==2.11.2
 kiwisolver==1.2.0
-lxml==4.5.0
+lxml==4.9.1
 MarkupSafe==1.1.1
 matplotlib==3.2.1
 numpy==1.18.4
